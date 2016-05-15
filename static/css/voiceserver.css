@@ -1,0 +1,69 @@
+.voiceSrv, .voiceSrverror {
+    background-color: #ffffff;
+}
+
+.voiceSrv, .voiceSrv *, .voiceSrverror {
+    color: #00000;
+    font-family: Verdana;
+    font-size: 12px;
+}
+
+.voiceSrv label {
+    border-bottom: 1px solid #aaaaaa;
+}
+
+.voiceSrvItem a {
+    color: #000000 !important;
+}
+
+.voiceSrvItem a:hover {
+    background-color: #f6f6f6;
+    color: #000099;
+}
+
+.voiceSrverror {
+    color: #ff0000;
+}
+
+.voiceSrv, .voiceSrv * {
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+}
+
+.voiceSrv {
+    position: relative;
+    overflow: hidden;
+}
+
+.voiceSrv label {
+    display: block;
+    padding: 2px 0;
+}
+
+.voiceSrvItem {
+    margin-left: 16px;
+    position: relative;
+    white-space:nowrap;
+}
+
+.voiceSrvItem a {
+    display: block;
+    text-decoration: none;
+}
+
+.voiceSrvItem img {
+    border: 0;
+    vertical-align: middle;
+    margin-right: 2px;
+}
+
+.voiceSrvFlags {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.voiceSrvServer {
+    margin-left: 0;
+}
