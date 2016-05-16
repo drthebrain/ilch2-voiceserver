@@ -66,7 +66,7 @@ if ($voiceServer['Type'] == 'TS3') {
         window.setInterval(function(){
             refreshVoice();
             function refreshVoice() {
-                $('#voiceserver').load('<?=$this->getUrl('voiceserver/ajax/refreshVoice'); ?>');
+                $('#voiceserver').load('<?=$this->getUrl(array('module' => 'voiceserver', 'controller' => 'ajax','action' => 'refreshVoice')); ?>');
             };
         }, <?=$voiceServer['Refresh']*1000 ?> );
     });
