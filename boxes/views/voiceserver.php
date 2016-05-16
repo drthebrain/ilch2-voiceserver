@@ -42,8 +42,8 @@ if ($voiceServer['Type'] == 'TS3') {
 //}
 ?>
 
-<link href="<?=$this->getModuleUrl('static/css/voiceserver.css') ?>" rel="stylesheet">
-<script src="<?=$this->getModuleUrl('static/js/tsstatus.js') ?>" type="text/javascript"></script>
+<link href="<?=$this->getBaseUrl('application/modules/voiceserver/static/css/voiceserver.css') ?>" rel="stylesheet">
+<script src="<?=$this->getBaseUrl('application/modules/voiceserver/static/js/tsstatus.js') ?>" type="text/javascript"></script>
 
 <div id="voiceserver">
     <div class="voiceSrv">
