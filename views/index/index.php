@@ -2,29 +2,27 @@
 
 <?php $voiceServer = $this->get('voiceServer'); ?>
 
-<?php if(!function_exists('getVoiceserverView')): ?>
-    <?php function getVoiceserverView($items) { ?>
-        <?php foreach ($items as $item): ?>
-            <div class="voiceSrvItem">
-                <a href="<?=$item['link'] ?>" title="<?=$item['topic'] ?>" >
-                    <?=$item['icon'] . $item['name'] ?>
-                    <div class="voiceSrvFlags"><?=$item['flags'] ?></div>
-                    <?php if(isset($item['users'])): ?>
-                        <?php foreach ($item['users'] as $user): ?>
-                            <div class="voiceSrvItem">
-                            <?=$user['icon'] . $user['name'] ?>
-                            <div class="voiceSrvFlags"><?=$user['flags'] ?></div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>          
-                </a>
-                <?php if(isset($item['children'])) {
-                    getVoiceserverView($item['children']); 
-                } ?>
-            </div>
-        <?php endforeach; ?>
-    <?php }; ?>
-<?php endif; ?>
+<?php function getVoiceserverView($items) { ?>
+    <?php foreach ($items as $item): ?>
+        <div class="voiceSrvItem">
+            <a href="<?=$item['link'] ?>" title="<?=$item['topic'] ?>" >
+                <?=$item['icon'] . $item['name'] ?>
+                <div class="voiceSrvFlags"><?=$item['flags'] ?></div>
+                <?php if (isset($item['users'])): ?>
+                    <?php foreach ($item['users'] as $user): ?>
+                        <div class="voiceSrvItem">
+                        <?=$user['icon'] . $user['name'] ?>
+                        <div class="voiceSrvFlags"><?=$user['flags'] ?></div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>          
+            </a>
+            <?php if (isset($item['children'])) {
+                getVoiceserverView($item['children']); 
+            } ?>
+        </div>
+    <?php endforeach; ?>
+<?php }; ?>
 
 <?php
 if ($voiceServer['Type'] == 'TS3') {   

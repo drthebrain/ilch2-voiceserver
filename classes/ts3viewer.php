@@ -11,7 +11,8 @@
  * @version 2013-08-31
  */
 
-class TS3Viewer {
+class TS3Viewer 
+{
 
     private $_host;
     private $_queryPort;
@@ -236,7 +237,7 @@ class TS3Viewer {
     {
         $content = "";
         foreach ($images as $image)
-            if(file_exists(__DIR__ . '/../static/img/ts3/' . $image)) {
+            if (file_exists(__DIR__ . '/../static/img/ts3/' . $image)) {
                 $content .= '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
             } else {
                 $content .= $this->renderIcon($image);
@@ -263,10 +264,10 @@ class TS3Viewer {
             }
             $image = $id . '.png';
             $pfad = __DIR__ . '/../static/img/ts3/server/' . $image;
-            if(!file_exists($pfad) && $this->showIcons)  {
+            if (!file_exists($pfad) && $this->showIcons)  {
                 $dl = $this->parseLine($this->sendCommand("ftinitdownload clientftfid=".rand(1,99)." name=\/icon_".$id." cid=0 cpw= seekpos=0"));
                 $ft = @fsockopen($this->_host, $dl[0]['port'], $errnum, $errstr, 2);
-                if($ft) {
+                if ($ft) {
                     fputs($ft, $dl[0]['ftkey']);
                     $img = '';
                     while(!feof($ft)) {
@@ -277,7 +278,7 @@ class TS3Viewer {
                     fclose($file);
                 }
             }
-            if(file_exists($pfad)) {
+            if (file_exists($pfad)) {
                 $content .= '<img src="' . $this->imagePath . 'server/' . $image . '" alt="' . $image . '"/>';
             }
         }
@@ -292,17 +293,17 @@ class TS3Viewer {
      */
     private function time_convert($time, $ms = false) 
     {
-        if($ms) $time = $time / 1000;
+        if ($ms) $time = $time / 1000;
         $day = floor($time/86400);
         $hours = floor(($time%86400)/3600);
         $minutes = floor(($time%3600)/60);
         $seconds = floor($time%60);
 
-        if($day>0) {
+        if ($day>0) {
             $time = $day."d ".$hours."h ".$minutes."m ".$seconds."s";
-        } elseif($hours>0) {
+        } elseif ($hours>0) {
             $time = $hours."h ".$minutes."m ".$seconds."s";
-        } elseif($minutes>0) {
+        } elseif ($minutes>0) {
             $time = $minutes."m ".$seconds."s";
         } else {
             $time = $seconds."s";
@@ -446,10 +447,10 @@ class TS3Viewer {
             $this->_javascriptName = $javascriptName = preg_replace("#[^a-z-A-Z0-9]#", "-", $host . "-" . $port);
 
             $root = array(
-		'link' => "javascript:tsstatusconnect('" . $this->_javascriptName . "')",
-		'name' => $this->toHTML($this->_serverDatas['virtualserver_name']),
-		'icon' => $this->renderImages(array("16x16_server_green.png")),		
-	    );
+                'link' => "javascript:tsstatusconnect('" . $this->_javascriptName . "')",
+                'name' => $this->toHTML($this->_serverDatas['virtualserver_name']),
+                'icon' => $this->renderImages(array("16x16_server_green.png")),		
+            );
             $channels = $this->prepareChannelTree(0);
             
             $this->disconnect();
@@ -484,4 +485,3 @@ class TS3Viewer {
         return $content;
     }
 }
-?>
