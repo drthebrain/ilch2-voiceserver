@@ -447,9 +447,11 @@ class TS3Viewer
             $this->_javascriptName = $javascriptName = preg_replace("#[^a-z-A-Z0-9]#", "-", $host . "-" . $port);
 
             $root = array(
-                'link' => "javascript:tsstatusconnect('" . $this->_javascriptName . "')",
-                'name' => $this->toHTML($this->_serverDatas['virtualserver_name']),
-                'icon' => $this->renderImages(array("16x16_server_green.png")),		
+                'input' => $javascriptName,
+                'value' => $host . ":" . $port,
+                'link'  => "javascript:tsstatusconnect('" . $this->_javascriptName . "')",
+                'name'  => $this->toHTML($this->_serverDatas['virtualserver_name']),
+                'icon'  => $this->renderImages(array("16x16_server_green.png")),        
             );
             $channels = $this->prepareChannelTree(0);
             

@@ -97,6 +97,7 @@ if ($voiceServer['Type'] == 'TS3') {
         <tr>
             <td>
                 <div class="voiceSrv">
+                    <input type="hidden" id="tsstatus-<?=$datas['root']['input'] ?>-hostport" value="<?=$datas['root']['value'] ?>" />
                     <div class="voiceSrvItem voiceSrvServer">
                         <a href="<?=$datas['root']['link'] ?>" >
                             <?=$datas['root']['icon'] . $datas['root']['name'] ?>
