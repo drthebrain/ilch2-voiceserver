@@ -1,41 +1,38 @@
 <legend><?=$this->getTrans('menuVoiceServer') ?></legend>
 
+<?php $voiceServer = $this->get('voiceServer'); ?>
+
+<?php if(!function_exists('getVoiceserverView')): ?>
+    <?php function getVoiceserverView($items) { ?>
+        <?php foreach ($items as $item): ?>
+            <div class="voiceSrvItem">
+                <a href="<?=$item['link'] ?>" title="<?=$item['topic'] ?>" >
+                    <?=$item['icon'] . $item['name'] ?>
+                    <div class="voiceSrvFlags"><?=$item['flags'] ?></div>
+                    <?php if(isset($item['users'])): ?>
+                        <?php foreach ($item['users'] as $user): ?>
+                            <div class="voiceSrvItem">
+                            <?=$user['icon'] . $user['name'] ?>
+                            <div class="voiceSrvFlags"><?=$user['flags'] ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>          
+                </a>
+                <?php if(isset($item['children'])) {
+                    getVoiceserverView($item['children']); 
+                } ?>
+            </div>
+        <?php endforeach; ?>
+    <?php }; ?>
+<?php endif; ?>
+
 <?php
-$voiceServer = $this->get('voiceServer');
-
-if (!function_exists('getView')) {
-    function getView($items) {
-
-        foreach ($items as $item) {
-
-            echo '<div class="voiceSrvItem">';
-            echo '<a href="' . $item['link'] . '" title="' . $item['topic'] . '">';
-            echo $item['icon'] . $item['name'];
-            echo '<div class="voiceSrvFlags">' . $item['flags'] . '</div>';
-            if (isset($item['users'])) {
-                foreach ($item['users'] as $user) {
-                    echo '<div class="voiceSrvItem">';
-                    echo $user['icon'] . $user['name'];
-                    echo '<div class="voiceSrvFlags">' . $user['flags'] . '</div>';
-                    echo '</div>';                               
-                }
-            }          
-            echo '</a>';
-            if (isset($item['children'])) {
-                getView($item['children']); 
-            }
-            echo '</div>';
-
-        }
-    }
-}
-
 if ($voiceServer['Type'] == 'TS3') {   
     require_once("./application/modules/voiceserver/classes/ts3viewer.php");
 
     $ts3viewer = new TS3Viewer($voiceServer['IP'], $voiceServer['QPort']);
     $ts3viewer->useServerPort($voiceServer['CPort']);
-
+    
     $datas = $ts3viewer->getFullServerInfo(); 
 }
 
@@ -46,7 +43,9 @@ if ($voiceServer['Type'] == 'TS3') {
 //       $test = $mumbleviewer->parse_response(NULL);
 //}
 ?>
-<link href="<?=$this->getBaseUrl('application/modules/voiceserver/static/css/voiceserver.css') ?>" rel="stylesheet">
+
+<link href="<?=$this->getModuleUrl('static/css/voiceserver.css') ?>" rel="stylesheet">
+<script src="<?=$this->getModuleUrl('static/js/tsstatus.js') ?>" type="text/javascript"></script>
 
 <table class="table table-striped table-hover table-responsive">
     <tbody>
@@ -73,7 +72,7 @@ if ($voiceServer['Type'] == 'TS3') {
     </tbody>
 </table>
 
-<table class="table table-striped table-hover table-responsive">
+<table class="table table-striped table-hover table-responsive hidden-xs">
     <thead>
         <tr>
             <th><?=$this->getTrans('tableUser') ?></th>
@@ -84,16 +83,14 @@ if ($voiceServer['Type'] == 'TS3') {
         </tr>
     </thead>
     <tbody>
-        <?php
-            foreach ( $datas['userlist'] as $user) {
-                echo '<tr>';
-                echo '<td>' . $user['icon'] . ' ' . $user['name'] . '</td>';
-                echo '<td>' . $user['channel'] . '</td>';
-                echo '<td>' . $user['uptime'] . '</td>';
-                echo '<td>' . $user['afk'] . '</td>';
-                echo '</tr>';
-            }
-        ?>
+        <?php foreach ($datas['userlist'] as $user): ?>
+            <tr>
+                <td><?=$user['icon'] . ' ' . $user['name'] ?></td>
+                <td><?=$user['channel'] ?></td>
+                <td><?=$user['uptime'] ?></td>
+                <td><?=$user['afk'] ?></td>
+            </tr>
+        <?php endforeach; ?>
     </tbody>
 </table>
 
@@ -103,12 +100,10 @@ if ($voiceServer['Type'] == 'TS3') {
             <td>
                 <div class="voiceSrv">
                     <div class="voiceSrvItem voiceSrvServer">
-                        <?php
-                            echo '<a href="' . $datas['root']['link'] . '">';
-                            echo $datas['root']['icon'] . $datas['root']['name'];
-                            echo '</a>';
-                            getView($datas['tree']); 
-                        ?>
+                        <a href="<?=$datas['root']['link'] ?>" >
+                            <?=$datas['root']['icon'] . $datas['root']['name'] ?>
+                        </a>
+                        <?php getVoiceserverView($datas['tree']); ?>
                     </div>
                 </div>                
             </td>

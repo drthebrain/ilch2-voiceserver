@@ -39,5 +39,3 @@ class Config extends \Ilch\Config\Install
         $this->db()->queryMulti("DELETE FROM `[prefix]_config` WHERE `key` = 'voice_server'");
     }
 }
-
-

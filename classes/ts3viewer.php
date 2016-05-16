@@ -33,7 +33,8 @@ class TS3Viewer {
     public $hideParentChannels;
     public $showIcons;
 
-    public function TS3Viewer($host, $queryPort) {
+    public function TS3Viewer($host, $queryPort) 
+    {
         $this->_host = $host;
         $this->_queryPort = $queryPort;
 
@@ -55,40 +56,49 @@ class TS3Viewer {
         $this->showIcons = true;
     }
 
-    public function useServerId($serverId) {
+    public function useServerId($serverId) 
+    {
         $this->_useCommand = "use sid=$serverId";
     }
 
-    public function useServerPort($serverPort) {
+    public function useServerPort($serverPort) 
+    {
         $this->_useCommand = "use port=$serverPort";
     }
     
-    public function setLoginPassword($login, $password) {
+    public function setLoginPassword($login, $password) 
+    {
         $this->_login = $login;
         $this->_password = $password;
     }
     
-    public function clearServerGroupFlags() {
+    public function clearServerGroupFlags() 
+    {
         $this->_serverGroupFlags = array();
     }
 
-    public function setServerGroupFlag($serverGroupId, $image) {
+    public function setServerGroupFlag($serverGroupId, $image) 
+    {
         $this->_serverGroupFlags[$serverGroupId] = $image;
     }
 
-    public function clearChannelGroupFlags() {
+    public function clearChannelGroupFlags() 
+    {
         $this->_channelGroupFlags = array();
     }
 
-    public function setChannelGroupFlag($channelGroupId, $image) {
+    public function setChannelGroupFlag($channelGroupId, $image) 
+    {
         $this->_channelGroupFlags[$channelGroupId] = $image;
     }
 
-    public function limitToChannels() {
+    public function limitToChannels() 
+    {
         $this->_channelList = func_get_args();
     }
 
-    private function ts3decode($str, $reverse = false) {
+    private function ts3decode($str, $reverse = false) 
+    {
         $find = array('\\\\', "\/", "\s", "\p", "\a", "\b", "\f", "\n", "\r", "\t", "\v");
         $rplc = array(chr(92), chr(47), chr(32), chr(124), chr(7), chr(8), chr(12), chr(10), chr(3), chr(9), chr(11));
 
@@ -97,17 +107,20 @@ class TS3Viewer {
         return str_replace($rplc, $find, $str);
     }
 
-    private function toHTML($string) {
+    private function toHTML($string) 
+    {
         return htmlentities($string, ENT_QUOTES, "UTF-8");
     }
 
-    private function sortUsers($a, $b) {
+    private function sortUsers($a, $b) 
+    {
         if ($a["client_talk_power"] != $b["client_talk_power"])
             return $a["client_talk_power"] > $b["client_talk_power"] ? -1 : 1;
         return strcasecmp($a["client_nickname"], $b["client_nickname"]);
     }    
 
-    private function parseLine($rawLine) { 
+    private function parseLine($rawLine) 
+    { 
         $datas = array();
         $rawItems = explode("|", $rawLine);
         foreach ($rawItems as $rawItem) {
@@ -122,7 +135,8 @@ class TS3Viewer {
         return $datas;
     }
 
-    private function sendCommand($cmd) {
+    private function sendCommand($cmd) 
+    {
         fputs($this->_socket, "$cmd\n");
         $response = "";
         do {
@@ -134,7 +148,8 @@ class TS3Viewer {
         return $response;
     }
 
-    private function queryServer() {
+    private function queryServer() 
+    {
         $this->_socket = @fsockopen($this->_host, $this->_queryPort, $errno, $errstr, $this->timeout);
         if ($this->_socket) {
             @socket_set_timeout($this->_socket, $this->timeout);
@@ -159,12 +174,14 @@ class TS3Viewer {
             throw new Exception("Socket error: $errstr [$errno]");
     }
 
-    private function disconnect() {
+    private function disconnect() 
+    {
         @fputs($this->_socket, "quit\n");
         @fclose($this->_socket);
     }
 
-    private function update() {
+    private function update() 
+    {
         $response = $this->queryServer();
         $lines = explode("error id=0 msg=ok\n\r", $response);
         if (count($lines) == 7) {
@@ -201,7 +218,8 @@ class TS3Viewer {
             throw new Exception("Invalid server response");
     }   
     
-    private function setShowFlag($channelIds) {
+    private function setShowFlag($channelIds) 
+    {
         if (!is_array($channelIds))
             $channelIds = array($channelIds);
         foreach ($channelIds as $cid) {
@@ -214,7 +232,8 @@ class TS3Viewer {
         }
     }
     
-    private function renderImages($images) {
+    private function renderImages($images) 
+    {
         $content = "";
         foreach ($images as $image)
             if(file_exists(__DIR__ . '/../static/img/ts3/' . $image)) {
@@ -229,7 +248,8 @@ class TS3Viewer {
      * @param string $id
      * @return string
      */
-    private function renderIcon($id) { 
+    private function renderIcon($id) 
+    { 
         $content = "";
         if ($id < 0) $id = $id+4294967296; 
         if ($id == "100" || $id == "200" || $id == "300" || $id == "500" || $id == "600") {
@@ -270,7 +290,8 @@ class TS3Viewer {
      * @param boolean $ms
      * @return string
      */
-    private function time_convert($time, $ms = false) {
+    private function time_convert($time, $ms = false) 
+    {
         if($ms) $time = $time / 1000;
         $day = floor($time/86400);
         $hours = floor(($time%86400)/3600);
@@ -295,7 +316,8 @@ class TS3Viewer {
      * @param int $channelId
      * @return array
      */
-    private function prepareUsers($channelId) {
+    private function prepareUsers($channelId) 
+    {
         $users = array();
         if (isset($this->_userDatas[$channelId])) {
             foreach ($this->_userDatas[$channelId] as $user) {
@@ -355,7 +377,8 @@ class TS3Viewer {
      * @param int $channelId
      * @return array
      */
-    private function prepareChannelTree($channelId) {
+    private function prepareChannelTree($channelId) 
+    {
         $tree = array();
         foreach ($this->_channelDatas as $channel) {
             if ($channel["pid"] == $channelId) {
@@ -406,7 +429,8 @@ class TS3Viewer {
      * get the Servertree
      * @return array
      */
-    public function getChannelTree() {
+    public function getChannelTree() 
+    {
         try {
             $this->update();
 
@@ -439,7 +463,8 @@ class TS3Viewer {
      * get the full ServerInformations
      * @return array
      */
-    public function getFullServerInfo() {
+    public function getFullServerInfo() 
+    {
         $tree = $this->getChannelTree();
 
         $content = array (
