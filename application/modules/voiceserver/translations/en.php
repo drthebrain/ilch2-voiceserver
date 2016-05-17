@@ -7,12 +7,16 @@
 return array
 (
     'menuVoiceServer'    => 'Voiceserver',
-    'voiceServerShow'    => 'Voiceserver Show',
     'voiceServerType'    => 'Server Type',
     'voiceServerIP'      => 'Server IP',
     'voiceServerCPort'   => 'Server Connectport',
     'voiceServerQPort'   => 'Server Queryport',
     'voiceServerRefresh' => 'Refreshtime',
+    
+    'missingIP'          => 'Please enter IP address',
+    'missingQPort'       => 'Please enter Queryport',
+    'missingCPort'       => 'Please enter Connectport',
+    
     'tableName'          => 'Servername',
     'tableOS'            => 'System',
     'tableUptime'        => 'Uptime',

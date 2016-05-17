@@ -6,13 +6,17 @@
 
 return array
 (
-    'menuVoiceServer'    => 'Voiceserver',
-    'voiceServerShow'    => 'Voiceserver Anzeigen',
+    'menuVoiceServer'    => 'Voiceserver',   
     'voiceServerType'    => 'Server Type',
     'voiceServerIP'      => 'Server IP',
     'voiceServerCPort'   => 'Server Connectport',
     'voiceServerQPort'   => 'Server Queryport',
     'voiceServerRefresh' => 'Refreshzeit',
+    
+    'missingIP'          => 'Bitte IP Adresse eingeben',
+    'missingQPort'       => 'Bitte Queryport eingeben',
+    'missingCPort'       => 'Bitte Connectport eingeben',
+    
     'tableName'          => 'Servername',
     'tableOS'            => 'Betriebsystem',
     'tableUptime'        => 'Laufzeit',
@@ -21,4 +25,6 @@ return array
     'tableChannel'       => 'Kanal',
     'tableLoggedin'      => 'Eingeloggt seit',
     'tableAfK'           => 'AFK seit',
+    
+
 );
