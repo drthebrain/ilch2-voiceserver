@@ -11,6 +11,7 @@ return array
     'voiceServerIP'      => 'Server IP',
     'voiceServerCPort'   => 'Server Connectport',
     'voiceServerQPort'   => 'Server Queryport',
+    'voiceServerCIcons'  => 'Benutzerdefinierte Icons',
     'voiceServerRefresh' => 'Refreshzeit',
     
     'missingIP'          => 'Bitte IP Adresse eingeben',

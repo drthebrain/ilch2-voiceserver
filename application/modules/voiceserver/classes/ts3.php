@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class TS3Viewer based on TSStatus: Teamspeak 3 viewer for php5
+ * Class TS3 based on TSStatus: Teamspeak 3 viewer for php5
  * @author D.Rümmler
  * @version 2016-05-14
  * 
@@ -11,7 +11,7 @@
  * @version 2013-08-31
  */
 
-class TS3Viewer 
+class TS3
 {
 
     private $_host;
@@ -34,7 +34,7 @@ class TS3Viewer
     public $hideParentChannels;
     public $showIcons;
 
-    public function TS3Viewer($host, $queryPort) 
+    public function TS3($host, $queryPort) 
     {
         $this->_host = $host;
         $this->_queryPort = $queryPort;
@@ -54,7 +54,7 @@ class TS3Viewer
         $this->timeout = 2;
         $this->hideEmptyChannels = false;
         $this->hideParentChannels = false;
-        $this->showIcons = true;
+        $this->showIcons = false;
     }
 
     public function useServerId($serverId) 
@@ -278,7 +278,7 @@ class TS3Viewer
                     fclose($file);
                 }
             }
-            if (file_exists($pfad)) {
+            if (file_exists($pfad) && $this->showIcons) {
                 $content .= '<img src="' . $this->imagePath . 'server/' . $image . '" alt="' . $image . '"/>';
             }
         }

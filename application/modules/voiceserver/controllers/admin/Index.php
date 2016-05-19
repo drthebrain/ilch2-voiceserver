@@ -34,15 +34,37 @@ class Index extends \Ilch\Controller\Admin
 
         if ($this->getRequest()->isPost()) {
             $voiceserver = $this->getRequest()->getPost('voiceServer');
-            if (empty($voiceserver['IP'])) {
-                $this->addMessage($this->getTranslator()->trans('missingIP'), 'danger');
-            } elseif (empty($voiceserver['QPort'])) {
-                $this->addMessage($this->getTranslator()->trans('missingQPort'), 'danger');
-            } elseif (empty($voiceserver['CPort'])) {
-                $this->addMessage($this->getTranslator()->trans('missingCPort'), 'danger');
-            } else {
-                $this->getConfig()->set('voice_server', json_encode($this->getRequest()->getPost('voiceServer')));
-                $this->addMessage('saveSuccess');
+            
+            switch ($voiceserver['Type']) {
+                case 'TS3':
+                    if (empty($voiceserver['IP'])) {
+                        $message = $this->getTranslator()->trans('missingIP');
+                    } elseif (empty($voiceserver['QPort'])) {
+                        $message = $this->getTranslator()->trans('missingQPort');
+                    } elseif (empty($voiceserver['CPort'])) {
+                        $message = $this->getTranslator()->trans('missingCPort');
+                    } else {
+                        unset($voiceserver['CVP']);
+                    }
+                    break;
+                case 'Mumble':
+                    unset($voiceserver['CIcons']);
+                    unset($voiceserver['QPort']);
+                    break;
+                case 'Ventrilo':
+                    unset($voiceserver['CIcons']);
+                    unset($voiceserver['QPort']);
+                    break;
+                default:
+                    $message = 'Error';
+                    break;
+            }                 
+             
+            if (isset($message)) {
+                $this->addMessage($message, 'danger');
+            } else {        
+                $this->getConfig()->set('voice_server', json_encode($voiceserver));
+                $this->addMessage('saveSuccess'); 
             }
         }
 

@@ -24,11 +24,12 @@
 
 <?php
 if ($voiceServer['Type'] == 'TS3') {   
-    require_once("./application/modules/voiceserver/classes/ts3viewer.php");
+    require_once("./application/modules/voiceserver/classes/ts3.php");
 
-    $ts3viewer = new TS3Viewer($voiceServer['IP'], $voiceServer['QPort']);
+    $ts3viewer = new TS3($voiceServer['IP'], $voiceServer['QPort']);
     $ts3viewer->useServerPort($voiceServer['CPort']);
-
+    $ts3viewer->showIcons = $voiceServer['CIcons'];
+    
     $datas = $ts3viewer->getChannelTree(); 
 }
 

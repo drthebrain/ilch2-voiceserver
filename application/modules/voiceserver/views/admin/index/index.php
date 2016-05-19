@@ -12,7 +12,7 @@
             <select class="form-control" name="voiceServer[Type]">
                 <option <?php if ($voiceServer['Type'] == 'TS3') { echo 'selected="selected"'; } ?> value="TS3">Teamspeak 3</option>
                 <!--option <?php if ($voiceServer['Type'] == 'Mumble') { echo 'selected="selected"'; } ?> value="Mumble">Mumble</option-->
-                <!--option <?php if ($voiceServer['Type'] == 'Ventrilo') { echo 'selected="selected"'; } ?> value="Ventrilo">Ventrilo</option-->
+                <option <?php if ($voiceServer['Type'] == 'Ventrilo') { echo 'selected="selected"'; } ?> value="Ventrilo">Ventrilo</option>
             </select>
         </div>
     </div>
@@ -53,6 +53,20 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="cookieConsent" class="col-lg-2 control-label">
+            <?=$this->getTrans('voiceServerCIcons') ?>:
+        </label>
+        <div class="col-lg-2">
+            <div class="flipswitch">  
+                <input type="radio" class="flipswitch-input" name="voiceServer[CIcons]" value="1" id="custom-icons-yes" <?php if ($voiceServer['CIcons'] == '1') { echo 'checked="checked"'; } ?> />  
+                <label for="custom-icons-yes" class="flipswitch-label flipswitch-label-on"><?=$this->getTrans('yes') ?></label>  
+                <input type="radio" class="flipswitch-input" name="voiceServer[CIcons]" value="0" id="custom-icons-no" <?php if ($voiceServer['CIcons'] == '0') { echo 'checked="checked"'; } ?> />  
+                <label for="custom-icons-no" class="flipswitch-label flipswitch-label-off"><?=$this->getTrans('no') ?></label>  
+                <span class="flipswitch-selection"></span>  
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="voiceServer[Refresh]" class="col-lg-2 control-label">
             <?=$this->getTrans('voiceServerRefresh') ?>:
         </label>
@@ -67,3 +81,15 @@
     
     <?=$this->getSaveBar() ?>
 </form>
+
+<script>
+    function switchType() {
+        if ($('select[name="voiceServer[Type]"]').val() == 'TS3') {
+            $('[name="voiceServer[QPort]"], [name="voiceServer[CIcons]"]').closest('.form-group').show();           
+        } else {
+            $('[name="voiceServer[QPort]"], [name="voiceServer[CIcons]"]').closest('.form-group').hide();
+        }
+    }
+    switchType();
+    $('select[name="voiceServer[Type]"]').change(switchType);
+</script>
