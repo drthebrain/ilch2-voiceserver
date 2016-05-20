@@ -9,7 +9,7 @@ return array
     'menuVoiceServer'    => 'Voiceserver',
     'voiceServerType'    => 'Server Type',
     'voiceServerIP'      => 'Server IP',
-    'voiceServerCPort'   => 'Server Connectport',
+    'voiceServerPort'    => 'Server Port',
     'voiceServerQPort'   => 'Server Queryport',
     'voiceServerCIcons'  => 'Custom Icons',
     'voiceServerRefresh' => 'Refreshtime',
@@ -17,7 +17,7 @@ return array
     
     'missingIP'          => 'Please enter IP address',
     'missingQPort'       => 'Please enter Queryport',
-    'missingCPort'       => 'Please enter Connectport',
+    'missingPort'        => 'Please enter Port',
     
     'tableName'          => 'Servername',
     'tableOS'            => 'System',

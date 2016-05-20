@@ -2,7 +2,12 @@
 Ilch 2.0 Modul zum Einbinden einer Voiceserverbox bzw einer Übersicht
 
 # TS3Class
-Dieses Modul basiert auf einer abgewandelten TS3Viewer class, die mit eigenen functions erweitert wurde
+Diese Klasse basiert auf einer abgewandelten TS3Viewer class, die mit eigenen functions erweitert wurde
+
+# VentriloClass
+Diese Klasse benutzt die ventrilo_status executable. Um diese benutzen zu können, downloaded man passend zum OS die Serverdatei bei ventrilo.com.
+Diese muss in den Ordner classes, bzw. kann man den Pfad auch konfigurieren(Variable $executable). 
+Weiterhin muss und die Möglichkeit bestehen, diese executable aufzrufen/abzufragen.
 
 # Konfiguration
 Das Modul installieren und Konfigurieren.
