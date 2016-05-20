@@ -31,7 +31,7 @@ class Config extends \Ilch\Config\Install
     public function install()
     {
         $databaseConfig = new \Ilch\Config\Database($this->db());
-        $databaseConfig->set('voice_server', '{"Type":"TS3","IP":"1.1.1.1","QPort":"10011","CPort":"9987","Refresh":"30"}');
+        $databaseConfig->set('voice_server', '{"Type":"TS3","IP":"1.1.1.1","QPort":"10011","Port":"9987","Refresh":"30"}');
     }
 
     public function uninstall()
