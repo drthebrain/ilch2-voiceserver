@@ -12,7 +12,7 @@
             <select class="form-control" name="voiceServer[Type]">
                 <option <?php if ($voiceServer['Type'] == 'TS3') { echo 'selected="selected"'; } ?> value="TS3">Teamspeak 3</option>
                 <!--option <?php if ($voiceServer['Type'] == 'Mumble') { echo 'selected="selected"'; } ?> value="Mumble">Mumble</option-->
-                <option <?php if ($voiceServer['Type'] == 'Ventrilo') { echo 'selected="selected"'; } ?> value="Ventrilo">Ventrilo</option>
+                <!--option <?php if ($voiceServer['Type'] == 'Ventrilo') { echo 'selected="selected"'; } ?> value="Ventrilo">Ventrilo</option-->
             </select>
         </div>
     </div>
@@ -29,18 +29,6 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="voiceServer[Port]" class="col-lg-2 control-label">
-            <?=$this->getTrans('voiceServerPort') ?>:
-        </label>
-        <div class="col-lg-6">
-            <input class="form-control"
-                   name="voiceServer[Port]"
-                   type="number"
-                   min="0" max="65535"
-                   value="<?=$this->escape($voiceServer['Port']) ?>" />
-        </div>
-    </div>
-    <div class="form-group">
         <label for="voiceServer[QPort]" class="col-lg-2 control-label">
             <?=$this->getTrans('voiceServerQPort') ?>:
         </label>
@@ -50,6 +38,18 @@
                    type="number"
                    min="0" max="65535"
                    value="<?=$this->escape($voiceServer['QPort']) ?>" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="voiceServer[CPort]" class="col-lg-2 control-label">
+            <?=$this->getTrans('voiceServerCPort') ?>:
+        </label>
+        <div class="col-lg-6">
+            <input class="form-control"
+                   name="voiceServer[CPort]"
+                   type="number"
+                   min="0" max="65535"
+                   value="<?=$this->escape($voiceServer['CPort']) ?>" />
         </div>
     </div>
     <div class="form-group">

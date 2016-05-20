@@ -9,14 +9,14 @@ return array
     'menuVoiceServer'    => 'Voiceserver',   
     'voiceServerType'    => 'Server Type',
     'voiceServerIP'      => 'Server IP',
-    'voiceServerPort'    => 'Server Port',
+    'voiceServerCPort'   => 'Server Connectport',
     'voiceServerQPort'   => 'Server Queryport',
     'voiceServerCIcons'  => 'Benutzerdefinierte Icons',
     'voiceServerRefresh' => 'Refreshzeit',
     
     'missingIP'          => 'Bitte IP Adresse eingeben',
     'missingQPort'       => 'Bitte Queryport eingeben',
-    'missingPort'        => 'Bitte Port eingeben',
+    'missingCPort'       => 'Bitte Connectport eingeben',
     
     'tableName'          => 'Servername',
     'tableOS'            => 'Betriebsystem',

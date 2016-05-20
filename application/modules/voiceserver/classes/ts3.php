@@ -2,9 +2,7 @@
 
 /**
  * Class TS3 based on TSStatus: Teamspeak 3 viewer for php5
- * @package    Voiceserver
- * @subpackage ts3.php
- * @author     D.Rümmler
+ * @author D.Rümmler
  * @version 2016-05-14
  * 
  * TSStatus: Teamspeak 3 viewer for php5
@@ -15,6 +13,7 @@
 
 class TS3
 {
+
     private $_host;
     private $_queryPort;
     private $_serverDatas;
@@ -245,7 +244,6 @@ class TS3
             }
         return $content;
     }
-    
     /**
      * download and render icon
      * @param string $id
@@ -367,10 +365,9 @@ class TS3
                         'uptime'  => $this->time_convert(time() - $user['client_lastconnected']),
                         'afk'     => $this->time_convert($user['client_idle_time'],true),
                     );
-                
-                    $users[] = $userdata;
-                    $this->_userList[] = $userlistdata;
                 }
+                $users[] = $userdata;
+                $this->_userList[] = $userlistdata;
             }
         }
         return $users;
@@ -454,12 +451,12 @@ class TS3
                 'value' => $host . ":" . $port,
                 'link'  => "javascript:tsstatusconnect('" . $this->_javascriptName . "')",
                 'name'  => $this->toHTML($this->_serverDatas['virtualserver_name']),
-                'icon'  => $this->renderImages(array("ts3.png")),        
+                'icon'  => $this->renderImages(array("16x16_server_green.png")),        
             );
             $channels = $this->prepareChannelTree(0);
             
             $this->disconnect();
-        } catch (Exception $e) {
+        } catch (Exception $ex) {
             $this->disconnect();
         }
         return array('root' => $root, 'tree' => $channels);

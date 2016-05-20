@@ -5,16 +5,12 @@
         <div class="voiceSrvItem">
             <a href="<?=$item['link'] ?>" title="<?=$item['topic'] ?>" >
                 <?=$item['icon'] . $item['name'] ?>
-                <?php if (isset($item['flags'])): ?>
-                    <div class="voiceSrvFlags"><?=$item['flags'] ?></div>
-                <?php endif; ?>
+                <div class="voiceSrvFlags"><?=$item['flags'] ?></div>
                 <?php if (isset($item['users'])): ?>
                     <?php foreach ($item['users'] as $user): ?>
                         <div class="voiceSrvItem">
                         <?=$user['icon'] . $user['name'] ?>
-                        <?php if (isset($user['flags'])): ?>
-                            <div class="voiceSrvFlags"><?=$user['flags'] ?></div>
-                        <?php endif; ?>
+                        <div class="voiceSrvFlags"><?=$user['flags'] ?></div>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>          
@@ -27,32 +23,22 @@
 <?php }; ?>
 
 <?php
-switch ($voiceServer['Type']) {
-    case 'TS3':
-        require_once("./application/modules/voiceserver/classes/ts3.php");
+if ($voiceServer['Type'] == 'TS3') {   
+    require_once("./application/modules/voiceserver/classes/ts3.php");
 
-        $ts3viewer = new TS3($voiceServer['IP'], $voiceServer['QPort']);
-        $ts3viewer->useServerPort($voiceServer['Port']);
-        $ts3viewer->showIcons = $voiceServer['CIcons'];
-
-        $datas = $ts3viewer->getFullServerInfo(); 
-        break;
-//    case 'Mumble':
-//        require_once("./application/modules/voiceserver/classes/mumbleviewer.php");
-//
-//        $mumbleviewer = new MumbleViewer();
-//        $test = $mumbleviewer->parse_response(NULL);
-//        break;
-    case 'Ventrilo':
-        require_once("./application/modules/voiceserver/classes/ventrilo.php");
-
-        $ventriloviewer = new Ventrilo($voiceServer['IP'], $voiceServer['QPort']);
-        
-        $datas = $ventriloviewer->getFullServerInfo(); 
-        break;
-    default:
-        break;
+    $ts3viewer = new TS3($voiceServer['IP'], $voiceServer['QPort']);
+    $ts3viewer->useServerPort($voiceServer['CPort']);
+    $ts3viewer->showIcons = $voiceServer['CIcons'];
+    
+    $datas = $ts3viewer->getChannelTree(); 
 }
+
+//if ($voiceServer['Type'] == 'Mumble') {
+//       require_once("./application/modules/voiceserver/classes/mumbleviewer.php");
+//
+//       $mumbleviewer = new MumbleViewer();
+//       $test = $mumbleviewer->parse_response(NULL);
+//}
 ?>
 
 <link href="<?=$this->getBaseUrl('application/modules/voiceserver/static/css/voiceserver.css') ?>" rel="stylesheet">
@@ -62,7 +48,7 @@ switch ($voiceServer['Type']) {
     <div class="voiceSrv">
         <input type="hidden" id="tsstatus-<?=$datas['root']['input'] ?>-hostport" value="<?=$datas['root']['value'] ?>" />
         <div class="voiceSrvItem voiceSrvServer">
-            <a href="<?=$datas['root']['link'] ?>">
+            <a href="' . $datas['root']['link'] . '">
                 <?=$datas['root']['icon'] . $datas['root']['name'] ?>
             </a>
             <?php getVoiceserverBoxView($datas['tree']); ?>
