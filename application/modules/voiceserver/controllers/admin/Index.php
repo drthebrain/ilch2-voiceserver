@@ -43,15 +43,19 @@ class Index extends \Ilch\Controller\Admin
                         $message = $this->getTranslator()->trans('missingQPort');
                     } elseif (empty($voiceserver['Port'])) {
                         $message = $this->getTranslator()->trans('missingPort');
-                    } else {
-                        unset($voiceserver['CVP']);
-                    }
+                    } 
                     break;
                 case 'Mumble':
+                    unset($voiceserver['Port']);
                     unset($voiceserver['CIcons']);
                     unset($voiceserver['QPort']);
                     break;
                 case 'Ventrilo':
+                    if (empty($voiceserver['IP'])) {
+                        $message = $this->getTranslator()->trans('missingIP');
+                    } elseif (empty($voiceserver['Port'])) {
+                        $message = $this->getTranslator()->trans('missingPort');
+                    }
                     unset($voiceserver['CIcons']);
                     unset($voiceserver['QPort']);
                     break;

@@ -33,22 +33,26 @@ switch ($voiceServer['Type']) {
 
         $ts3viewer = new TS3($voiceServer['IP'], $voiceServer['QPort']);
         $ts3viewer->useServerPort($voiceServer['Port']);
-        $ts3viewer->showIcons = $voiceServer['CIcons'];
+        $ts3viewer->hideEmptyChannels = isset($voiceServer['HideEmpty'])?$voiceServer['HideEmpty']:false;
+        $ts3viewer->showIcons = isset($voiceServer['CIcons'])?$voiceServer['CIcons']:false;
 
-        $datas = $ts3viewer->getFullServerInfo(); 
+        $datas = $ts3viewer->getChannelTree(); 
         break;
-//    case 'Mumble':
-//        require_once("./application/modules/voiceserver/classes/mumbleviewer.php");
-//
-//        $mumbleviewer = new MumbleViewer();
-//        $test = $mumbleviewer->parse_response(NULL);
-//        break;
+    case 'Mumble':
+        require_once("./application/modules/voiceserver/classes/mumble.php");
+
+        $mumbleviewer = new Mumble();
+        $mumbleviewer->hideEmptyChannels = isset($voiceServer['HideEmpty'])?$voiceServer['HideEmpty']:false;
+        
+        $datas = $mumbleviewer->getChannelTree();
+        break;
     case 'Ventrilo':
         require_once("./application/modules/voiceserver/classes/ventrilo.php");
 
         $ventriloviewer = new Ventrilo($voiceServer['IP'], $voiceServer['QPort']);
+        $ventriloviewer->hideEmptyChannels = isset($voiceServer['HideEmpty'])?$voiceServer['HideEmpty']:false;
         
-        $datas = $ventriloviewer->getFullServerInfo(); 
+        $datas = $ventriloviewer->getChannelTree(); 
         break;
     default:
         break;

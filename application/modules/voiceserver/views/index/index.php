@@ -35,20 +35,24 @@ switch ($voiceServer['Type']) {
 
         $ts3viewer = new TS3($voiceServer['IP'], $voiceServer['QPort']);
         $ts3viewer->useServerPort($voiceServer['Port']);
-        $ts3viewer->showIcons = $voiceServer['CIcons'];
+        $ts3viewer->hideEmptyChannels = isset($voiceServer['HideEmpty'])?$voiceServer['HideEmpty']:false;
+        $ts3viewer->showIcons = isset($voiceServer['CIcons'])?$voiceServer['CIcons']:false;
 
         $datas = $ts3viewer->getFullServerInfo(); 
         break;
-//    case 'Mumble':
-//        require_once("./application/modules/voiceserver/classes/mumbleviewer.php");
-//
-//        $mumbleviewer = new MumbleViewer();
-//        $test = $mumbleviewer->parse_response(NULL);
-//        break;
+    case 'Mumble':
+        require_once("./application/modules/voiceserver/classes/mumble.php");
+
+        $mumbleviewer = new Mumble();
+        $mumbleviewer->hideEmptyChannels = isset($voiceServer['HideEmpty'])?$voiceServer['HideEmpty']:false;
+        
+        $datas = $mumbleviewer->getFullServerInfo();
+        break;
     case 'Ventrilo':
         require_once("./application/modules/voiceserver/classes/ventrilo.php");
 
         $ventriloviewer = new Ventrilo($voiceServer['IP'], $voiceServer['QPort']);
+        $ventriloviewer->hideEmptyChannels = isset($voiceServer['HideEmpty'])?$voiceServer['HideEmpty']:false;
         
         $datas = $ventriloviewer->getFullServerInfo(); 
         break;
@@ -66,10 +70,12 @@ switch ($voiceServer['Type']) {
             <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableName') ?>:</td>
             <td align="center"><?=$datas['name'] ?></td>
         </tr>
-        <tr>
-            <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableOS') ?>:</td>
-            <td align="center"><?=$datas['platform'] ?></td>
-        </tr>
+        <?php if (key_exists('platform', $datas)): ?>
+            <tr>
+                <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableOS') ?>:</td>
+                <td align="center"><?=$datas['platform'] ?></td>
+            </tr>
+        <?php endif; ?>
         <tr>
             <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableUptime') ?>:</td>
             <td align="center"><?=$datas['uptime'] ?></td>
@@ -91,7 +97,7 @@ switch ($voiceServer['Type']) {
             <th><?=$this->getTrans('tableUser') ?></th>
             <th><?=$this->getTrans('tableChannel') ?></th>
             <th><?=$this->getTrans('tableLoggedin') ?></th>
-            <?php if ($voiceServer['Type']=='TS3'): ?>
+            <?php if ($voiceServer['Type']!='Ventrilo'): ?>
                 <th><?=$this->getTrans('tableAfK') ?></th>
             <?php endif; ?>
         </tr>
@@ -102,7 +108,7 @@ switch ($voiceServer['Type']) {
                 <td><?=$user['icon'] . ' ' . $user['name'] ?></td>
                 <td><?=$user['channel'] ?></td>
                 <td><?=$user['uptime'] ?></td>
-                <?php if ($voiceServer['Type']=='TS3'): ?>
+                <?php if ($voiceServer['Type']!='Ventrilo'): ?>
                     <td><?=$user['afk'] ?></td>
                 <?php endif; ?>
             </tr>
@@ -142,9 +148,11 @@ switch ($voiceServer['Type']) {
                         <tr>
                             <td><b>Version:</b></td>
                         </tr>
-                        <tr>
-                            <td><?=$datas['version'] ?><br><br></td>
-                        </tr>
+                        <?php if (key_exists('version', $datas)): ?>
+                            <tr>
+                                <td><?=$datas['version'] ?><br><br></td>
+                            </tr>
+                        <?php endif; ?>
                         <?php if (!empty($datas['image'])): ?>
                             <tr>
                                 <td><img src="<?=$datas['image'] ?>" /></td>

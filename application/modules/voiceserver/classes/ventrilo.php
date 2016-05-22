@@ -78,7 +78,7 @@ class Ventrilo
     {
         $content = "";
         foreach ($images as $image)
-            if (file_exists(__DIR__ . '/../static/img/ventrilo/' . $image)) {
+            if (file_exists(realpath('') .  $this->imagePath . $image)) {
                 $content .= '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
             } 
         return $content;
@@ -316,8 +316,7 @@ class Ventrilo
      * @return array
      */
     public function getFullServerInfo() 
-    {
-        
+    {       
         $tree = $this->getChannelTree();
 
         $content = array (

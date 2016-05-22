@@ -137,6 +137,100 @@ class TS3
         return $datas;
     }
 
+    private function setShowFlag($channelIds) 
+    {
+        if (!is_array($channelIds))
+            $channelIds = array($channelIds);
+        foreach ($channelIds as $cid) {
+            if (isset($this->_channelDatas[$cid])) {
+                $this->_channelDatas[$cid]["show"] = true;
+                if (!$this->hideParentChannels && $this->_channelDatas[$cid]["pid"] != 0) {
+                    $this->setShowFlag($this->_channelDatas[$cid]["pid"]);
+                }
+            }
+        }
+    }
+    
+    private function renderImages($images) 
+    { 
+        $content = "";
+        foreach ($images as $image)
+            if (file_exists(realpath('') .  $this->imagePath . $image)) {
+                $content .= '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
+            } else {
+                $content .= $this->renderIcon($image);
+            }
+        return $content;
+    }
+    
+    /**
+     * download and render icon
+     * @param string $id
+     * @return string
+     */
+    private function renderIcon($id) 
+    { 
+        $content = "";
+        if ($id < 0) $id = $id+4294967296; 
+        if ($id == "100" || $id == "200" || $id == "300" || $id == "500" || $id == "600") {
+            $image = "group_" . $id . ".png";
+            $content = '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
+        } else {          
+            if (!file_exists(realpath('') .  $this->imagePath . 'server/') 
+                && !is_dir(realpath('') .  $this->imagePath . 'server/') 
+                && !is_writable(realpath('') .  $this->imagePath . 'server/')) {
+                    @mkdir(realpath('') .  $this->imagePath . 'server/', 0755, true);
+            }
+            $image = $id . '.png';
+            $pfad = realpath('') .  $this->imagePath . 'server/' . $image;
+            if (!file_exists($pfad) && $this->showIcons)  {
+                $dl = $this->parseLine($this->sendCommand("ftinitdownload clientftfid=".rand(1,99)." name=\/icon_".$id." cid=0 cpw= seekpos=0"));
+                $ft = @fsockopen($this->_host, $dl[0]['port'], $errnum, $errstr, 2);
+                if ($ft) {
+                    fputs($ft, $dl[0]['ftkey']);
+                    $img = '';
+                    while(!feof($ft)) {
+                        $img .= fgets($ft, 4096);
+                    }
+                    $file = fopen($pfad,"w");
+                    fwrite($file, $img);
+                    fclose($file);
+                }
+            }
+            if (file_exists($pfad) && $this->showIcons) {
+                $content .= '<img src="' . $this->imagePath . 'server/' . $image . '" alt="' . $image . '"/>';
+            }
+        }
+        return $content;
+    }
+    
+    /**
+     * convert timestamp to user readable time
+     * @param string $time
+     * @param boolean $ms
+     * @return string
+     */
+    private function time_convert($time, $ms = false) 
+    {
+        if ($ms) $time = $time / 1000;
+        $day = floor($time/86400);
+        $hours = floor(($time%86400)/3600);
+        $minutes = floor(($time%3600)/60);
+        $seconds = floor($time%60);
+
+        if ($day>0) {
+            $time = $day."d ".$hours."h ".$minutes."m ".$seconds."s";
+        } elseif ($hours>0) {
+            $time = $hours."h ".$minutes."m ".$seconds."s";
+        } elseif ($minutes>0) {
+            $time = $minutes."m ".$seconds."s";
+        } else {
+            $time = $seconds."s";
+        }
+
+        return $time;
+    }
+
     private function sendCommand($cmd) 
     {
         fputs($this->_socket, "$cmd\n");
@@ -219,101 +313,7 @@ class TS3
         } else
             throw new Exception("Invalid server response");
     }   
-    
-    private function setShowFlag($channelIds) 
-    {
-        if (!is_array($channelIds))
-            $channelIds = array($channelIds);
-        foreach ($channelIds as $cid) {
-            if (isset($this->_channelDatas[$cid])) {
-                $this->_channelDatas[$cid]["show"] = true;
-                if (!$this->hideParentChannels && $this->_channelDatas[$cid]["pid"] != 0) {
-                    $this->setShowFlag($this->_channelDatas[$cid]["pid"]);
-                }
-            }
-        }
-    }
-    
-    private function renderImages($images) 
-    {
-        $content = "";
-        foreach ($images as $image)
-            if (file_exists(__DIR__ . '/../static/img/ts3/' . $image)) {
-                $content .= '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
-            } else {
-                $content .= $this->renderIcon($image);
-            }
-        return $content;
-    }
-    
-    /**
-     * download and render icon
-     * @param string $id
-     * @return string
-     */
-    private function renderIcon($id) 
-    { 
-        $content = "";
-        if ($id < 0) $id = $id+4294967296; 
-        if ($id == "100" || $id == "200" || $id == "300" || $id == "500" || $id == "600") {
-            $image = "group_" . $id . ".png";
-            $content = '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
-        } else {          
-            if (!file_exists(__DIR__ . '/../static/img/ts3/server/') 
-                && !is_dir(__DIR__ . '/../static/img/ts3/server/') 
-                && !is_writable(__DIR__ . '/../static/img/ts3/server/')) {
-                    @mkdir(__DIR__ . '/../static/img/ts3/server/', 0755, true);
-            }
-            $image = $id . '.png';
-            $pfad = __DIR__ . '/../static/img/ts3/server/' . $image;
-            if (!file_exists($pfad) && $this->showIcons)  {
-                $dl = $this->parseLine($this->sendCommand("ftinitdownload clientftfid=".rand(1,99)." name=\/icon_".$id." cid=0 cpw= seekpos=0"));
-                $ft = @fsockopen($this->_host, $dl[0]['port'], $errnum, $errstr, 2);
-                if ($ft) {
-                    fputs($ft, $dl[0]['ftkey']);
-                    $img = '';
-                    while(!feof($ft)) {
-                        $img .= fgets($ft, 4096);
-                    }
-                    $file = fopen($pfad,"w");
-                    fwrite($file, $img);
-                    fclose($file);
-                }
-            }
-            if (file_exists($pfad) && $this->showIcons) {
-                $content .= '<img src="' . $this->imagePath . 'server/' . $image . '" alt="' . $image . '"/>';
-            }
-        }
-        return $content;
-    }
-    
-    /**
-     * convert timestamp to user readable time
-     * @param string $time
-     * @param boolean $ms
-     * @return string
-     */
-    private function time_convert($time, $ms = false) 
-    {
-        if ($ms) $time = $time / 1000;
-        $day = floor($time/86400);
-        $hours = floor(($time%86400)/3600);
-        $minutes = floor(($time%3600)/60);
-        $seconds = floor($time%60);
-
-        if ($day>0) {
-            $time = $day."d ".$hours."h ".$minutes."m ".$seconds."s";
-        } elseif ($hours>0) {
-            $time = $hours."h ".$minutes."m ".$seconds."s";
-        } elseif ($minutes>0) {
-            $time = $minutes."m ".$seconds."s";
-        } else {
-            $time = $seconds."s";
-        }
-
-        return $time;
-    }
-    
+        
     /**
      * prepare User Data
      * @param int $channelId
