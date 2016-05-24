@@ -46,9 +46,10 @@ class Index extends \Ilch\Controller\Admin
                     } 
                     break;
                 case 'Mumble':
-                    unset($voiceserver['Port']);
-                    unset($voiceserver['CIcons']);
+                    unset($voiceserver['IP']);
+                    unset($voiceserver['Port']);                   
                     unset($voiceserver['QPort']);
+                    unset($voiceserver['CIcons']);
                     break;
                 case 'Ventrilo':
                     if (empty($voiceserver['IP'])) {
@@ -56,8 +57,8 @@ class Index extends \Ilch\Controller\Admin
                     } elseif (empty($voiceserver['Port'])) {
                         $message = $this->getTranslator()->trans('missingPort');
                     }
-                    unset($voiceserver['CIcons']);
                     unset($voiceserver['QPort']);
+                    unset($voiceserver['CIcons']);                   
                     break;
                 default:
                     $message = 'Error';

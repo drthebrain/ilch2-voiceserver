@@ -10,7 +10,7 @@ Diese muss in den Ordner classes, bzw. kann man den Pfad auch konfigurieren(Vari
 Weiterhin muss die Möglichkeit bestehen, diese executable aufzurufen/abzufragen.
 
 # MumbleClass
-Diese Klasse benutz die ICE Schnittstelle und kann daher nur mit ICE benutzt werden.
+Diese Klasse benutzt die ICE Schnittstelle und kann daher nur mit ICE benutzt werden.
 Mumble muss daher entsprechend konfiguriert sein, sowie die ICE Extension geladen und die Murmur.php generiert werden. 
 Weiterhin ist derzeit fest die ServerID 1 integriert.
 json comming soon.....

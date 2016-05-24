@@ -84,6 +84,13 @@ class Ventrilo
         return $content;
     }
     
+    private function buildLink($channels = false) {
+        $link  = 'ventrilo://' . $this->_host . ':' . $this->_port . '/servername=' . $this->toHTML($this->_serverDatas['name']);
+        if ($channels) 
+            $link .= '/' . implode('/', $channels);
+        return $link;
+    }
+    
     /**
      * convert timestamp to user readable time
      * @param string $time
@@ -240,37 +247,40 @@ class Ventrilo
      * @param int $channelId
      * @return array
      */
-    private function prepareChannelTree($channelId) 
+    private function prepareChannelTree($channelId, $cnames = array()) 
     {
         $tree = array();
         foreach ($this->_channelDatas as $channel) {
             if ($channel["pid"] == $channelId) {
                 if ($channel["show"]) {
                     $name = $this->toHTML($channel["name"]);
+                    $cnames[] = rawurlencode($name);
+                    
                     $topic = isset($channel["comm"]) ? $this->toHTML($channel["comm"]) : '';
 
-                        $icon = "channel.png";
-                        $icon = $this->renderImages(array($icon));
+                    $icon = "channel.png";
+                    $icon = $this->renderImages(array($icon));
 
-                        $flags = array();
-                        if ($channel["prot"] == 1)
-                            $flags[] = "protect.png";
-                        $flags = $this->renderImages($flags);
+                    $flags = array();
+                    if ($channel["prot"] == 1)
+                        $flags[] = "protect.png";
+                    $flags = $this->renderImages($flags);
 
-                        $tree[$channel["cid"]] = array(
-                            'link'  => '', //"javascript:tsstatusconnect('" . $this->_javascriptName . "'," . $channel["cid"] . ")",
-                            'name'  => $name,
-                            'topic' => $topic,
-                            'icon'  => $icon,
-                            'flags' => $flags,
-                        );
+                    $tree[$channel["cid"]] = array(
+                        'link'  => $this->buildLink($cnames),
+                        'name'  => $name,
+                        'topic' => $topic,
+                        'icon'  => $icon,
+                        'flags' => $flags,
+                    );
 
-                        if ($users = $this->prepareUsers($channel["cid"]))
-                            $tree[$channel["cid"]] ['users'] = $users;
+                    if ($users = $this->prepareUsers($channel["cid"]))
+                        $tree[$channel["cid"]] ['users'] = $users;
 
-                        if ($children = $this->prepareChannelTree($channel["cid"]))
-                            $tree[$channel["cid"]] ['children'] = $children;
+                    if ($children = $this->prepareChannelTree($channel["cid"], $cnames))
+                        $tree[$channel["cid"]] ['children'] = $children;
                 }
+                array_pop($cnames);
             }
         }
         return $tree;
@@ -292,14 +302,8 @@ class Ventrilo
             else if (count($this->_channelList) > 0)
                 $this->setShowFlag($this->_channelList);
 
-//            $host = $this->_host;
-//            $port = $this->_serverDatas["virtualserver_port"];
-//            $this->_javascriptName = $javascriptName = preg_replace("#[^a-z-A-Z0-9]#", "-", $host . "-" . $port);
-
             $root = array(
-                'input' => '', //$javascriptName,
-                'value' => '', //$host . ":" . $port,
-                'link'  => '', //"javascript:tsstatusconnect('" . $this->_javascriptName . "')",
+                'link'  => $this->buildLink(),
                 'name'  => $this->toHTML($this->_serverDatas['name']),
                 'icon'  => $this->renderImages(array("ventrilo.png")),        
             );

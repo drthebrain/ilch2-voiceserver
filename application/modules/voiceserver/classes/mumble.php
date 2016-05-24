@@ -30,11 +30,14 @@ class Mumble
     public $hideEmptyChannels;
     public $hideParentChannels;
     
-    public function Mumble($id = 1) 
+    public function Mumble($host, $port)
     {
+        $this->_host = $host;
+        $this->_port = $port;
+        
         $this->ice  = $this->init_ICE();
         
-        $this->id = $id;
+        $this->id = 1;
         $this->_serverDatas = array();
         $this->_channelDatas = array();
         $this->_userDatas = array();
@@ -54,11 +57,11 @@ class Mumble
         if(!self::$useNewAPI) {
             global $ICE;
             Ice_loadProfile();
-            $base = $ICE->stringToProxy("Meta:tcp -h 127.0.0.1 -p 6502");
+            $base = $ICE->stringToProxy("Meta:tcp -h ".$this->_host." -p ".$this->_port);
             return $base->ice_checkedCast("::Murmur::Meta");
         } else {
             $ICE = Ice_initialize();
-            return Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy('Meta:tcp -h 127.0.0.1 -p 6502'));
+            return Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy("Meta:tcp -h ".$this->_host." -p ".$this->_port));
         }
     }
   
@@ -76,6 +79,11 @@ class Mumble
     { 
         return strcasecmp($a->name, $b->name);
     } 
+    
+    private function sortChannels($a, $b) 
+    { 
+        return $a->position > $b->position;
+    }
     
     private function setShowFlag($channelIds) 
     {
@@ -99,6 +107,14 @@ class Mumble
                 $content .= '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
             } 
         return $content;
+    }
+    
+    private function buildLink($channels = false) {
+        $link  = 'mumble://' . $this->_serverDatas['host'] . ':' . $this->_serverDatas['port'];
+        if ($channels) 
+            $link .= '/' . implode('/', $channels);
+        $link .= '?version=' . $this->_serverDatas['version'];
+        return $link;
     }
     
     /**
@@ -136,8 +152,12 @@ class Mumble
             $defaultconf = $this->ice->getDefaultConf();
             $serverconf = $server->getAllConf();
             $this->_serverDatas = array_merge($defaultconf, $serverconf);
+            
+            $this->ice->getVersion($major, $minor, $patch, $text);
+            $this->_serverDatas['version'] = $major . '.' . $minor . '.' . $patch;
 
             $tmpChannels = $server->getChannels();
+            usort($tmpChannels, array($this, "sortChannels"));
             $hide = count($this->_channelList) > 0 || $this->hideEmptyChannels;
             foreach ($tmpChannels as $channel) {
                 $channel->show = !$hide;
@@ -170,7 +190,7 @@ class Mumble
                 $name = $this->toHTML($user->name);
  
                 $icon = "talking_off.png";
-                if ($user->idlesecs == 0)
+                if ($user->bytespersec > 0)
                     $icon = "talking_on.png";
                 $icon = $this->renderImages(array($icon));
 
@@ -189,7 +209,7 @@ class Mumble
                     $flags[] = "muted_self.png";
                 if ($user->selfDeaf)
                     $flags[] = "deafened_self.png";
-                if ($user->userid != -1)                   
+                if ($user->userid > -1)                   
                     $flags[] = "authenticated.png";
                 $flags = $this->renderImages($flags);
 
@@ -212,41 +232,43 @@ class Mumble
         }
         return $users;
     }
-    
+     
     /**
      * prepare Channel Data
      * @param int $channelId
      * @return array
      */
-    private function prepareChannelTree($channelId) 
+    private function prepareChannelTree($channelId, $cnames = array()) 
     {
         $tree = array();
         foreach ($this->_channelDatas as $channel) {
             if ($channel->parent == $channelId) {
                 if ($channel->show) {
                     $name = $this->toHTML($channel->name);
+                    $cnames[] = rawurlencode($channel->name);
+
                     $topic = $this->toHTML($channel->description);
 
-                    $icon = "channel.png";
-                    if (count($channel->links))
-                        $icon = "channel_linked";
-                    $icon = $this->renderImages(array($icon));
-
+                    $icons = array();
+                    $icons[] = !count($channel->links)?"channel.png":"channel_linked";
+                    $icons = $this->renderImages($icons);
+                    
                     $tree[$channel->id] = array(
-                        'link'  => '', #"javascript:tsstatusconnect('" . $this->_javascriptName . "'," . $channel["cid"] . ")",
+                        'link'  => $this->buildLink($cnames),
                         'name'  => $name,
                         'topic' => $topic,
-                        'icon'  => $icon,
+                        'icon'  => $icons,
                         'flags' => '' 
                     );
 
                     if ($users = $this->prepareUsers($channel->id))
                         $tree[$channel->id] ['users'] = $users;
 
-                    if ($children = $this->prepareChannelTree($channel->id))
+                    if ($children = $this->prepareChannelTree($channel->id, $cnames))
                         $tree[$channel->id] ['children'] = $children;
                 }
-            }
+                array_pop($cnames);
+            }           
         }
         return $tree;
     }
@@ -267,14 +289,8 @@ class Mumble
             else if (count($this->_channelList) > 0)
                 $this->setShowFlag($this->_channelList);
 
-//            $host = $this->_host;
-//            $port = $this->_serverDatas["virtualserver_port"];
-//            $this->_javascriptName = $javascriptName = preg_replace("#[^a-z-A-Z0-9]#", "-", $host . "-" . $port);
-
-            $root = array(
-                'input' => '', //$javascriptName,
-                'value' => '', //$host . ":" . $port,
-                'link'  => '', //"javascript:tsstatusconnect('" . $this->_javascriptName . "')",
+            $root = array( 
+                'link'  => $this->buildLink(),
                 'name'  => $this->toHTML($this->_serverDatas['registername']),
                 'icon'  => $this->renderImages(array("mumble.png")),        
             );
@@ -301,6 +317,7 @@ class Mumble
             'channelson' => count($this->_channelDatas) - 1,
             'userson'    => count($this->_userList),
             'server'     => $this->_serverDatas['host'].':'.$this->_serverDatas['port'],
+            'version'    => $this->_serverDatas['version'],
             'welcome'    => $this->_serverDatas['welcometext'],
             'userlist'   => $this->_userList,
             'root'       => $tree['root'],

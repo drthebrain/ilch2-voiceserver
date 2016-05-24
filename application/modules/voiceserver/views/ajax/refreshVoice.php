@@ -41,7 +41,7 @@ switch ($voiceServer['Type']) {
     case 'Mumble':
         require_once("./application/modules/voiceserver/classes/mumble.php");
 
-        $mumbleviewer = new Mumble();
+        $mumbleviewer = new Mumble('127.0.0.1','6502');
         $mumbleviewer->hideEmptyChannels = isset($voiceServer['HideEmpty'])?$voiceServer['HideEmpty']:false;
         
         $datas = $mumbleviewer->getChannelTree();
@@ -49,7 +49,7 @@ switch ($voiceServer['Type']) {
     case 'Ventrilo':
         require_once("./application/modules/voiceserver/classes/ventrilo.php");
 
-        $ventriloviewer = new Ventrilo($voiceServer['IP'], $voiceServer['QPort']);
+        $ventriloviewer = new Ventrilo($voiceServer['IP'], $voiceServer['Port']);
         $ventriloviewer->hideEmptyChannels = isset($voiceServer['HideEmpty'])?$voiceServer['HideEmpty']:false;
         
         $datas = $ventriloviewer->getChannelTree(); 
@@ -60,7 +60,6 @@ switch ($voiceServer['Type']) {
 ?>
 
 <div class="voiceSrv">
-    <input type="hidden" id="tsstatus-<?=$datas['root']['input'] ?>-hostport" value="<?=$datas['root']['value'] ?>" />
     <div class="voiceSrvItem voiceSrvServer">
         <a href="<?=$datas['root']['link'] ?>">
             <?=$datas['root']['icon'] . $datas['root']['name'] ?>

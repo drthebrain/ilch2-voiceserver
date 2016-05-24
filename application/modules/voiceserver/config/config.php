@@ -18,12 +18,12 @@ class Config extends \Ilch\Config\Install
             'de_DE' => array
             (
                 'name' => 'Voiceserver',
-                'description' => 'Hier kann der Voiceserver (TS3 | Mumble) verwaltet werden.',
+                'description' => 'Hier kann der Voiceserver (TS3|Ventrilo|Mumble) verwaltet werden.',
             ),
             'en_EN' => array
             (
                 'name' => 'Voiceserver',
-                'description' => 'Here you can manage Voiceserver (TS3 | Mumble) from your Site.',
+                'description' => 'Here you can manage Voiceserver (TS3|Ventrilo|Mumble) from your Site.',
             ),
         )
     );

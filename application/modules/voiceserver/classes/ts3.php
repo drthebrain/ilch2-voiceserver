@@ -27,7 +27,6 @@ class TS3
     private $_password;
     private $_channelList;
     private $_useCommand;
-    private $_javascriptName; 
     private $_socket;
     public $imagePath;
     public $timeout;
@@ -266,8 +265,9 @@ class TS3
             $response .= $this->sendCommand("channelgrouplist");
                  
             return $response;
-        } else
+        } else {
             throw new Exception("Socket error: $errstr [$errno]");
+        }
     }
 
     private function disconnect() 
@@ -310,8 +310,9 @@ class TS3
             foreach ($channelGroups as $cg) 
                 if ($cg["iconid"] > 0)
                     $this->setChannelGroupFlag($cg["cgid"], 'group_' . $cg["iconid"] . '.png');
-        } else
+        } else {
             throw new Exception("Invalid server response");
+        }
     }   
         
     /**
@@ -411,7 +412,7 @@ class TS3
                     $flags = $this->renderImages($flags);
 
                     $tree[$channel["cid"]] = array(
-                        'link'  => "javascript:tsstatusconnect('" . $this->_javascriptName . "'," . $channel["cid"] . ")",
+                        'link'  => "ts3server://" . $this->_host . "?port=" . $this->_serverDatas["virtualserver_port"] . "&cid=" . $channel["cid"], 
                         'name'  => $name,
                         'topic' => $topic,
                         'icon'  => $icon,
@@ -445,14 +446,8 @@ class TS3
             else if (count($this->_channelList) > 0)
                 $this->setShowFlag($this->_channelList);
 
-            $host = $this->_host;
-            $port = $this->_serverDatas["virtualserver_port"];
-            $this->_javascriptName = $javascriptName = preg_replace("#[^a-z-A-Z0-9]#", "-", $host . "-" . $port);
-
             $root = array(
-                'input' => $javascriptName,
-                'value' => $host . ":" . $port,
-                'link'  => "javascript:tsstatusconnect('" . $this->_javascriptName . "')",
+                'link'  => "ts3server://" . $this->_host . "?port=" . $this->_serverDatas["virtualserver_port"], #javascript:tsstatusconnect('" . $this->_javascriptName . "')",
                 'name'  => $this->toHTML($this->_serverDatas['virtualserver_name']),
                 'icon'  => $this->renderImages(array("ts3.png")),        
             );
