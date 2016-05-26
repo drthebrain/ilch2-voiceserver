@@ -40,15 +40,15 @@ class TS3
         $this->_queryPort = $queryPort;
 
         $this->_socket = null;
-        $this->_serverDatas = array();
-        $this->_channelDatas = array();
-        $this->_userDatas = array();
-        $this->_userList = array();
-        $this->_serverGroupFlags = array();
-        $this->_channelGroupFlags = array();
+        $this->_serverDatas = [];
+        $this->_channelDatas = [];
+        $this->_userDatas = [];
+        $this->_userList = [];
+        $this->_serverGroupFlags = [];
+        $this->_channelGroupFlags = [];
         $this->_login = false;
         $this->_password = false;
-        $this->_channelList = array();
+        $this->_channelList = [];
         $this->_useCommand = "use port=9987";
         $this->imagePath = "/application/modules/voiceserver/static/img/ts3/";
         $this->timeout = 2;
@@ -75,7 +75,7 @@ class TS3
     
     public function clearServerGroupFlags() 
     {
-        $this->_serverGroupFlags = array();
+        $this->_serverGroupFlags = [];
     }
 
     public function setServerGroupFlag($serverGroupId, $image) 
@@ -85,7 +85,7 @@ class TS3
 
     public function clearChannelGroupFlags() 
     {
-        $this->_channelGroupFlags = array();
+        $this->_channelGroupFlags = [];
     }
 
     public function setChannelGroupFlag($channelGroupId, $image) 
@@ -100,8 +100,8 @@ class TS3
 
     private function ts3decode($str, $reverse = false) 
     {
-        $find = array('\\\\', "\/", "\s", "\p", "\a", "\b", "\f", "\n", "\r", "\t", "\v");
-        $rplc = array(chr(92), chr(47), chr(32), chr(124), chr(7), chr(8), chr(12), chr(10), chr(3), chr(9), chr(11));
+        $find = ['\\\\', "\/", "\s", "\p", "\a", "\b", "\f", "\n", "\r", "\t", "\v"];
+        $rplc = [chr(92), chr(47), chr(32), chr(124), chr(7), chr(8), chr(12), chr(10), chr(3), chr(9), chr(11)];
 
         if (!$reverse)
             return str_replace($find, $rplc, $str);
@@ -122,11 +122,11 @@ class TS3
 
     private function parseLine($rawLine) 
     { 
-        $datas = array();
+        $datas = [];
         $rawItems = explode("|", $rawLine);
         foreach ($rawItems as $rawItem) {
             $rawDatas = explode(" ", $rawItem);
-            $tempDatas = array();
+            $tempDatas = [];
             foreach ($rawDatas as $rawData) {
                 $ar = explode("=", $rawData, 2);
                 $tempDatas[$ar[0]] = isset($ar[1]) ? $this->ts3decode($ar[1]) : "";
@@ -139,7 +139,7 @@ class TS3
     private function setShowFlag($channelIds) 
     {
         if (!is_array($channelIds))
-            $channelIds = array($channelIds);
+            $channelIds = [$channelIds];
         foreach ($channelIds as $cid) {
             if (isset($this->_channelDatas[$cid])) {
                 $this->_channelDatas[$cid]["show"] = true;
@@ -292,11 +292,11 @@ class TS3
             }
 
             $tmpUsers = $this->parseLine($lines[3]);
-            usort($tmpUsers, array($this, "sortUsers"));
+            usort($tmpUsers, [$this, "sortUsers"]);
             foreach ($tmpUsers as $user) {
                 if ($user["client_type"] == 0) {
                     if (!isset($this->_userDatas[$user["cid"]]))
-                        $this->_userDatas[$user["cid"]] = array();
+                        $this->_userDatas[$user["cid"]] = [];
                     $this->_userDatas[$user["cid"]][] = $user;
                 }
             }
@@ -322,7 +322,7 @@ class TS3
      */
     private function prepareUsers($channelId) 
     {
-        $users = array();
+        $users = [];
         if (isset($this->_userDatas[$channelId])) {
             foreach ($this->_userDatas[$channelId] as $user) {
                 if ($user["client_type"] == 0) {
@@ -341,9 +341,9 @@ class TS3
                         $icon = "16x16_hardware_input_muted.png";
                     else if ($user["client_input_muted"] == 1)
                         $icon = "16x16_input_muted.png";
-                    $icon = $this->renderImages(array($icon));
+                    $icon = $this->renderImages([$icon]);
 
-                    $flags = array();
+                    $flags = [];
                     if (isset($this->_channelGroupFlags[$user["client_channel_group_id"]])) {
                         $flags[] = $this->_channelGroupFlags[$user["client_channel_group_id"]];
                     }
@@ -356,18 +356,18 @@ class TS3
                     }
                     $flags = $this->renderImages($flags);
 
-                    $userdata = array (
+                    $userdata =  [
                         'name'  => $name,
                         'icon'  => $icon,
                         'flags' => $flags
-                    );
-                    $userlistdata = array(
+                    ];
+                    $userlistdata = [
                         'name'    => $name,
                         'icon'    => $icon,
                         'channel' => $this->toHTML($this->_channelDatas[$user['cid']]["channel_name"]),
                         'uptime'  => $this->time_convert(time() - $user['client_lastconnected']),
                         'afk'     => $this->time_convert($user['client_idle_time'],true),
-                    );
+                    ];
                 
                     $users[] = $userdata;
                     $this->_userList[] = $userlistdata;
@@ -384,7 +384,7 @@ class TS3
      */
     private function prepareChannelTree($channelId) 
     {
-        $tree = array();
+        $tree = [];
         foreach ($this->_channelDatas as $channel) {
             if ($channel["pid"] == $channelId) {
                 if ($channel["show"]) {
@@ -398,9 +398,9 @@ class TS3
                         $icon = "16x16_channel_red.png";
                     else if ($channel["channel_flag_password"] == 1)
                         $icon = "16x16_channel_yellow.png";
-                    $icon = $this->renderImages(array($icon));
+                    $icon = $this->renderImages([$icon]);
 
-                    $flags = array();
+                    $flags = [];
                     if ($channel["channel_flag_default"] == 1)
                         $flags[] = '16x16_default.png';
                     if ($channel["channel_needed_talk_power"] > 0)
@@ -411,13 +411,13 @@ class TS3
                         $flags[] = $channel["channel_icon_id"];
                     $flags = $this->renderImages($flags);
 
-                    $tree[$channel["cid"]] = array(
+                    $tree[$channel["cid"]] = [
                         'link'  => "ts3server://" . $this->_host . "?port=" . $this->_serverDatas["virtualserver_port"] . "&cid=" . $channel["cid"], 
                         'name'  => $name,
                         'topic' => $topic,
                         'icon'  => $icon,
                         'flags' => $flags,
-                    );
+                    ];
 
                     if ($users = $this->prepareUsers($channel["cid"]))
                         $tree[$channel["cid"]] ['users'] = $users;
@@ -446,18 +446,19 @@ class TS3
             else if (count($this->_channelList) > 0)
                 $this->setShowFlag($this->_channelList);
 
-            $root = array(
-                'link'  => "ts3server://" . $this->_host . "?port=" . $this->_serverDatas["virtualserver_port"], #javascript:tsstatusconnect('" . $this->_javascriptName . "')",
+            $root = [
+                'link'  => "ts3server://" . $this->_host . "?port=" . $this->_serverDatas["virtualserver_port"],
                 'name'  => $this->toHTML($this->_serverDatas['virtualserver_name']),
-                'icon'  => $this->renderImages(array("ts3.png")),        
-            );
+                'icon'  => $this->renderImages(["ts3.png"]),        
+            ];
             $channels = $this->prepareChannelTree(0);
             
             $this->disconnect();
         } catch (Exception $e) {
             $this->disconnect();
+            return 'offline';
         }
-        return array('root' => $root, 'tree' => $channels);
+        return ['root' => $root, 'tree' => $channels];
     }
 
     /**
@@ -468,20 +469,24 @@ class TS3
     {
         $tree = $this->getChannelTree();
 
-        $content = array (
-            'name'       => $this->toHTML($this->_serverDatas['virtualserver_name']),
-            'platform'   => $this->_serverDatas['virtualserver_platform'],
-            'uptime'     => $this->time_convert($this->_serverDatas['virtualserver_uptime']),
-            'channelson' => $this->_serverDatas['virtualserver_channelsonline'],
-            'userson'    => count($this->_userDatas),
-            'server'     => $this->_host.':'.$this->_serverDatas["virtualserver_port"],
-            'version'    => $this->_serverDatas['virtualserver_version'],
-            'image'      => $this->_serverDatas['virtualserver_hostbanner_gfx_url'],
-            'welcome'    => $this->_serverDatas['virtualserver_welcomemessage'],
-            'userlist'   => $this->_userList,
-            'root'       => $tree['root'],
-            'tree'       => $tree['tree'],
-        );
+        if (is_array($tree)) {
+            $content =  [
+                'name'       => $this->toHTML($this->_serverDatas['virtualserver_name']),
+                'platform'   => $this->_serverDatas['virtualserver_platform'],
+                'uptime'     => $this->time_convert($this->_serverDatas['virtualserver_uptime']),
+                'channelson' => $this->_serverDatas['virtualserver_channelsonline'],
+                'userson'    => count($this->_userDatas),
+                'server'     => $this->_host.':'.$this->_serverDatas["virtualserver_port"],
+                'version'    => $this->_serverDatas['virtualserver_version'],
+                'image'      => $this->_serverDatas['virtualserver_hostbanner_gfx_url'],
+                'welcome'    => $this->_serverDatas['virtualserver_welcomemessage'],
+                'userlist'   => $this->_userList,
+                'root'       => $tree['root'],
+                'tree'       => $tree['tree'],
+            ];
+        } else {
+            $content = 'offline';
+        }
         return $content;
     }
 }

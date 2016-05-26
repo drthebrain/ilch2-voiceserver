@@ -8,25 +8,25 @@ namespace Modules\Voiceserver\Config;
 
 class Config extends \Ilch\Config\Install
 {
-    public $config = array
-    (
+    public $config = 
+        [
         'key' => 'voiceserver',
         'author' => 'Rümmler, Dirk',
         'icon_small' => 'voiceserver.png',
-        'languages' => array
-        (
-            'de_DE' => array
-            (
+        'languages' => 
+            [
+            'de_DE' => 
+                [
                 'name' => 'Voiceserver',
                 'description' => 'Hier kann der Voiceserver (TS3|Ventrilo|Mumble) verwaltet werden.',
-            ),
-            'en_EN' => array
-            (
+                ],
+            'en_EN' => 
+                [
                 'name' => 'Voiceserver',
                 'description' => 'Here you can manage Voiceserver (TS3|Ventrilo|Mumble) from your Site.',
-            ),
-        )
-    );
+                ],
+            ]
+        ];
 
     public function install()
     {

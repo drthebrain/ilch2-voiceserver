@@ -4,8 +4,8 @@
  * @package ilch
  */
 
-return array
-(
+return 
+    [
     'menuVoiceServer'      => 'Voiceserver',
     'voiceServerType'      => 'Server Type',
     'voiceServerIP'        => 'Server IP',
@@ -28,4 +28,4 @@ return array
     'tableChannel'         => 'Channel',
     'tableLoggedin'        => 'Logged since',
     'tableAfK'             => 'AFK since',
-);
+    ];

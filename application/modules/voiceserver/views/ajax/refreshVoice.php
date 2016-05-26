@@ -59,11 +59,13 @@ switch ($voiceServer['Type']) {
 }
 ?>
 
-<div class="voiceSrv">
-    <div class="voiceSrvItem voiceSrvServer">
-        <a href="<?=$datas['root']['link'] ?>">
-            <?=$datas['root']['icon'] . $datas['root']['name'] ?>
-        </a>
-        <?php getVoiceserverBoxView($datas['tree']); ?>
+<?php if (is_array($datas)): ?>
+    <div class="voiceSrv">
+        <div class="voiceSrvItem voiceSrvServer">
+            <a href="<?=$datas['root']['link'] ?>">
+                <?=$datas['root']['icon'] . $datas['root']['name'] ?>
+            </a>
+            <?php getVoiceserverBoxView($datas['tree']); ?>
+        </div>
     </div>
-</div>
+<?php endif; ?>

@@ -62,14 +62,16 @@ switch ($voiceServer['Type']) {
 <link href="<?=$this->getBaseUrl('application/modules/voiceserver/static/css/voiceserver.css') ?>" rel="stylesheet">
 
 <div id="voiceserver">
-    <div class="voiceSrv">
-        <div class="voiceSrvItem voiceSrvServer">
-            <a href="<?=$datas['root']['link'] ?>">
-                <?=$datas['root']['icon'] . $datas['root']['name'] ?>
-            </a>
-            <?php getVoiceserverBoxView($datas['tree']); ?>
+    <?php if (is_array($datas)): ?>
+        <div class="voiceSrv">
+            <div class="voiceSrvItem voiceSrvServer">
+                <a href="<?=$datas['root']['link'] ?>">
+                    <?=$datas['root']['icon'] . $datas['root']['name'] ?>
+                </a>
+                <?php getVoiceserverBoxView($datas['tree']); ?>
+            </div>
         </div>
-    </div>
+    <?php endif; ?>
 </div>
 
 <?php if ($voiceServer['Refresh'] >= 30): ?>
@@ -78,7 +80,7 @@ switch ($voiceServer['Type']) {
         window.setInterval(function(){
             refreshVoice();
             function refreshVoice() {
-                $('#voiceserver').load('<?=$this->getUrl(array('module' => 'voiceserver', 'controller' => 'ajax','action' => 'refreshVoice')); ?>');
+                $('#voiceserver').load('<?=$this->getUrl(['module' => 'voiceserver', 'controller' => 'ajax','action' => 'refreshVoice']); ?>');
             };
         }, <?=$voiceServer['Refresh']*1000 ?> );
     });

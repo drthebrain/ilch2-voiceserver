@@ -33,11 +33,11 @@ class Ventrilo
         
         $this->_password = '';
         $this->_infocode = 2;
-        $this->_serverDatas = array();
-        $this->_channelDatas = array();
-        $this->_userDatas = array();
-        $this->_userList = array();
-        $this->_channelList = array();
+        $this->_serverDatas = [];
+        $this->_channelDatas = [];
+        $this->_userDatas = [];
+        $this->_userList = [];
+        $this->_channelList = [];
         $this->executable = __DIR__ . '/ventrilo_status';
         $this->imagePath = "/application/modules/voiceserver/static/img/ventrilo/";
         $this->hideEmptyChannels = false;
@@ -63,7 +63,7 @@ class Ventrilo
     private function setShowFlag($channelIds) 
     {
         if (!is_array($channelIds))
-            $channelIds = array($channelIds);
+            $channelIds = [$channelIds];
         foreach ($channelIds as $cid) {
             if (isset($this->_channelDatas[$cid])) {
                 $this->_channelDatas[$cid]["show"] = true;
@@ -119,7 +119,7 @@ class Ventrilo
     }
     
     private function parseLine($rawline) {
-        $tempDatas = array();
+        $tempDatas = [];
         $itemarray = explode(':', $rawline, 2);        
 
         if ($itemarray[0] == 'CHANNEL' || $itemarray[0] == 'CLIENT') {
@@ -184,7 +184,7 @@ class Ventrilo
         $response = $this->queryServer();
         
         $tmpChannels = $this->_channelList;
-        $this->_channelList = array();
+        $this->_channelList = [];
         $hide = count($this->_channelList) > 0 || $this->hideEmptyChannels;
         foreach ($tmpChannels as $channel) {
             $channel["show"] = !$hide;
@@ -192,11 +192,11 @@ class Ventrilo
         }
 
         $tmpUsers = $this->_userList;
-        $this->_userList = array();
-        usort($tmpUsers, array($this, "sortUsers"));
+        $this->_userList = [];
+        usort($tmpUsers, [$this, "sortUsers"]);
         foreach ($tmpUsers as $user) {
             if (!isset($this->_userDatas[$user["cid"]]))
-                $this->_userDatas[$user["cid"]] = array();
+                $this->_userDatas[$user["cid"]] = [];
             $this->_userDatas[$user["cid"]][] = $user;
         }
     }
@@ -208,31 +208,31 @@ class Ventrilo
      */
     private function prepareUsers($channelId) 
     {
-        $users = array();
+        $users = [];
         if (isset($this->_userDatas[$channelId])) {
             foreach ($this->_userDatas[$channelId] as $user) {
                 if ($user["phan"] == 0) {
                     $name = $this->toHTML($user["name"]);
 
                     $icon = "user.png";
-                    $icon = $this->renderImages(array($icon));
+                    $icon = $this->renderImages([$icon]);
 
-                    $flags = array();
+                    $flags = [];
                     if ($user["admin"]) 
                         $flags[] = "admin.png";
                     $flags = $this->renderImages($flags);
 
-                    $userdata = array (
+                    $userdata =  [
                         'name'  => $name,
                         'icon'  => $icon,
                         'flags' => $flags
-                    );
-                    $userlistdata = array(
+                    ];
+                    $userlistdata = [
                         'name'    => $name,
                         'icon'    => $icon,
                         'channel' => $this->toHTML($this->_channelDatas[$user['cid']]["name"]),
                         'uptime'  => $this->time_convert($user['sec'])
-                    );
+                    ];
 
                     $users[] = $userdata;
                     $this->_userList[] = $userlistdata;
@@ -247,9 +247,9 @@ class Ventrilo
      * @param int $channelId
      * @return array
      */
-    private function prepareChannelTree($channelId, $cnames = array()) 
+    private function prepareChannelTree($channelId, $cnames = []) 
     {
-        $tree = array();
+        $tree = [];
         foreach ($this->_channelDatas as $channel) {
             if ($channel["pid"] == $channelId) {
                 if ($channel["show"]) {
@@ -259,20 +259,20 @@ class Ventrilo
                     $topic = isset($channel["comm"]) ? $this->toHTML($channel["comm"]) : '';
 
                     $icon = "channel.png";
-                    $icon = $this->renderImages(array($icon));
+                    $icon = $this->renderImages([$icon]);
 
-                    $flags = array();
+                    $flags = [];
                     if ($channel["prot"] == 1)
                         $flags[] = "protect.png";
                     $flags = $this->renderImages($flags);
 
-                    $tree[$channel["cid"]] = array(
+                    $tree[$channel["cid"]] = [
                         'link'  => $this->buildLink($cnames),
                         'name'  => $name,
                         'topic' => $topic,
                         'icon'  => $icon,
                         'flags' => $flags,
-                    );
+                    ];
 
                     if ($users = $this->prepareUsers($channel["cid"]))
                         $tree[$channel["cid"]] ['users'] = $users;
@@ -302,17 +302,17 @@ class Ventrilo
             else if (count($this->_channelList) > 0)
                 $this->setShowFlag($this->_channelList);
 
-            $root = array(
+            $root = [
                 'link'  => $this->buildLink(),
                 'name'  => $this->toHTML($this->_serverDatas['name']),
-                'icon'  => $this->renderImages(array("ventrilo.png")),        
-            );
+                'icon'  => $this->renderImages(["ventrilo.png"]),        
+            ];
             $channels = $this->prepareChannelTree(0);
             
         } catch (Exception $e) {
             
         }
-        return array('root' => $root, 'tree' => $channels);
+        return ['root' => $root, 'tree' => $channels];
     }
     
     /**
@@ -323,7 +323,7 @@ class Ventrilo
     {       
         $tree = $this->getChannelTree();
 
-        $content = array (
+        $content =  [
             'name'       => $this->toHTML($this->_serverDatas['name']),
             'platform'   => $this->_serverDatas['platform'],
             'uptime'     => $this->time_convert($this->_serverDatas['uptime']),
@@ -335,7 +335,7 @@ class Ventrilo
             'userlist'   => $this->_userList,
             'root'       => $tree['root'],
             'tree'       => $tree['tree'],
-        );
+        ];
         return $content;
     }
 }

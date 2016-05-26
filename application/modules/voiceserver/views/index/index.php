@@ -63,60 +63,63 @@ switch ($voiceServer['Type']) {
 
 <link href="<?=$this->getModuleUrl('static/css/voiceserver.css') ?>" rel="stylesheet">
 
-<table class="table table-striped table-hover table-responsive">
-    <tbody>
-        <tr>
-            <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableName') ?>:</td>
-            <td align="center"><?=$datas['name'] ?></td>
-        </tr>
-        <?php if (key_exists('platform', $datas)): ?>
+<?php if (is_array($datas)): ?>
+    <table class="table table-striped table-hover table-responsive">
+        <tbody>
             <tr>
-                <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableOS') ?>:</td>
-                <td align="center"><?=$datas['platform'] ?></td>
+                <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableName') ?>:</td>
+                <td align="center"><?=$datas['name'] ?></td>
             </tr>
-        <?php endif; ?>
-        <tr>
-            <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableUptime') ?>:</td>
-            <td align="center"><?=$datas['uptime'] ?></td>
-        </tr>
-        <tr>
-            <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableChannels') ?>:</td>
-            <td align="center"><?=$datas['channelson'] ?></td>
-        </tr>
-        <tr>
-            <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableUser') ?>:</td>
-            <td align="center"><?=$datas['userson'] ?></td>
-        </tr>
-    </tbody>
-</table>
-
-<table class="table table-striped table-hover table-responsive hidden-xs">
-    <thead>
-        <tr>
-            <th><?=$this->getTrans('tableUser') ?></th>
-            <th><?=$this->getTrans('tableChannel') ?></th>
-            <th><?=$this->getTrans('tableLoggedin') ?></th>
-            <?php if ($voiceServer['Type']!='Ventrilo'): ?>
-                <th><?=$this->getTrans('tableAfK') ?></th>
+            <?php if (key_exists('platform', $datas)): ?>
+                <tr>
+                    <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableOS') ?>:</td>
+                    <td align="center"><?=$datas['platform'] ?></td>
+                </tr>
             <?php endif; ?>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($datas['userlist'] as $user): ?>
             <tr>
-                <td><?=$user['icon'] . ' ' . $user['name'] ?></td>
-                <td><?=$user['channel'] ?></td>
-                <td><?=$user['uptime'] ?></td>
+                <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableUptime') ?>:</td>
+                <td align="center"><?=$datas['uptime'] ?></td>
+            </tr>
+            <tr>
+                <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableChannels') ?>:</td>
+                <td align="center"><?=$datas['channelson'] ?></td>
+            </tr>
+            <tr>
+                <td class="col-sm-6 hidden-xs"><?=$this->getTrans('tableUser') ?>:</td>
+                <td align="center"><?=$datas['userson'] ?></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-striped table-hover table-responsive hidden-xs">
+        <thead>
+            <tr>
+                <th><?=$this->getTrans('tableUser') ?></th>
+                <th><?=$this->getTrans('tableChannel') ?></th>
+                <th><?=$this->getTrans('tableLoggedin') ?></th>
                 <?php if ($voiceServer['Type']!='Ventrilo'): ?>
-                    <td><?=$user['afk'] ?></td>
+                    <th><?=$this->getTrans('tableAfK') ?></th>
                 <?php endif; ?>
             </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            <?php foreach ($datas['userlist'] as $user): ?>
+                <tr>
+                    <td><?=$user['icon'] . ' ' . $user['name'] ?></td>
+                    <td><?=$user['channel'] ?></td>
+                    <td><?=$user['uptime'] ?></td>
+                    <?php if ($voiceServer['Type']!='Ventrilo'): ?>
+                        <td><?=$user['afk'] ?></td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php endif; ?>
 
 <table class="table table-striped table-hover table-responsive">
     <tbody>
+        <?php if (is_array($datas)): ?>
         <tr>
             <td>
                 <div class="voiceSrv">
@@ -164,5 +167,6 @@ switch ($voiceServer['Type']) {
                 </table>                
             </td>
         </tr>
+        <?php endif; ?>
     </tbody>
 </table>

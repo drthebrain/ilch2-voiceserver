@@ -4,8 +4,8 @@
  * @package ilch
  */
 
-return array
-(
+return 
+    [
     'menuVoiceServer'      => 'Voiceserver',   
     'voiceServerType'      => 'Server Type',
     'voiceServerIP'        => 'Server IP',
@@ -27,6 +27,4 @@ return array
     'tableChannel'         => 'Kanal',
     'tableLoggedin'        => 'Eingeloggt seit',
     'tableAfK'             => 'AFK seit',
-    
-
-);
+    ];

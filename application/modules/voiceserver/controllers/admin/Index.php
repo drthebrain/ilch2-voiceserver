@@ -13,24 +13,22 @@ class Index extends \Ilch\Controller\Admin
         $this->getLayout()->addMenu
         (
             'menuVoiceServer',
-            array
-            (
-                array
-                (
+            [
+                [
                     'name' => 'settings',
                     'active' => true,
                     'icon' => 'fa fa-cogs',
-                    'url' => $this->getLayout()->getUrl(array('controller' => 'index', 'action' => 'index'))
-                )
-            )
+                    'url' => $this->getLayout()->getUrl(['controller' => 'index', 'action' => 'index'])
+                ],
+            ]
         );
     }
 
     public function indexAction()
     {
         $this->getLayout()->getAdminHmenu()
-                ->add($this->getTranslator()->trans('menuVoiceServer'), array('action' => 'index'))
-                ->add($this->getTranslator()->trans('settings'), array('action' => 'index'));
+                ->add($this->getTranslator()->trans('menuVoiceServer'), ['action' => 'index'])
+                ->add($this->getTranslator()->trans('settings'), ['action' => 'index']);
 
         if ($this->getRequest()->isPost()) {
             $voiceserver = $this->getRequest()->getPost('voiceServer');

@@ -38,11 +38,11 @@ class Mumble
         $this->ice  = $this->init_ICE();
         
         $this->id = 1;
-        $this->_serverDatas = array();
-        $this->_channelDatas = array();
-        $this->_userDatas = array();
-        $this->_userList = array();
-        $this->_channelList = array();    
+        $this->_serverDatas = [];
+        $this->_channelDatas = [];
+        $this->_userDatas = [];
+        $this->_userList = [];
+        $this->_channelList = [];    
         $this->imagePath = "/application/modules/voiceserver/static/img/mumble/";
         $this->hideEmptyChannels = false;
         $this->hideParentChannels = false;
@@ -88,7 +88,7 @@ class Mumble
     private function setShowFlag($channelIds) 
     {
         if (!is_array($channelIds))
-            $channelIds = array($channelIds);
+            $channelIds = [$channelIds];
         foreach ($channelIds as $cid) {
             if (isset($this->_channelDatas[$cid])) {
                 $this->_channelDatas[$cid]->show = true;
@@ -157,7 +157,7 @@ class Mumble
             $this->_serverDatas['version'] = $major . '.' . $minor . '.' . $patch;
 
             $tmpChannels = $server->getChannels();
-            usort($tmpChannels, array($this, "sortChannels"));
+            usort($tmpChannels, [$this, "sortChannels"]);
             $hide = count($this->_channelList) > 0 || $this->hideEmptyChannels;
             foreach ($tmpChannels as $channel) {
                 $channel->show = !$hide;
@@ -165,10 +165,10 @@ class Mumble
             }
 
             $tmpUsers = $server->getUsers();
-            usort($tmpUsers, array($this, "sortUsers"));
+            usort($tmpUsers, [$this, "sortUsers"]);
             foreach ($tmpUsers as $user) {
                 if (!isset($this->_userDatas[$user->channel]))
-                    $this->_userDatas[$user->channel] = array();
+                    $this->_userDatas[$user->channel] = [];
                 $this->_userDatas[$user->channel][] = $user;
             }
 
@@ -184,7 +184,7 @@ class Mumble
      */
     private function prepareUsers($channelId) 
     {
-        $users = array();
+        $users = [];
         if (isset($this->_userDatas[$channelId])) {
             foreach ($this->_userDatas[$channelId] as $user) {
                 $name = $this->toHTML($user->name);
@@ -192,9 +192,9 @@ class Mumble
                 $icon = "talking_off.png";
                 if ($user->bytespersec > 0)
                     $icon = "talking_on.png";
-                $icon = $this->renderImages(array($icon));
+                $icon = $this->renderImages([$icon]);
 
-                $flags = array();
+                $flags = [];
                 if (!empty($user->comment))
                     $flags[] = "comment.png";
                 if ($user->prioritySpeaker)
@@ -213,18 +213,18 @@ class Mumble
                     $flags[] = "authenticated.png";
                 $flags = $this->renderImages($flags);
 
-                $userdata = array (
+                $userdata =  [
                     'name'  => $name,
                     'icon'  => $icon,
                     'flags' => $flags
-                );
-                $userlistdata = array(
+                ];
+                $userlistdata = [
                     'name'    => $name,
                     'icon'    => $icon,
                     'channel' => $this->toHTML($this->_channelDatas[$user->channel]->name),
                     'uptime'  => $this->time_convert($user->onlinesecs),
                     'afk'     => $this->time_convert($user->idlesecs),
-                );
+                ];
 
                 $users[] = $userdata;
                 $this->_userList[] = $userlistdata;
@@ -238,9 +238,9 @@ class Mumble
      * @param int $channelId
      * @return array
      */
-    private function prepareChannelTree($channelId, $cnames = array()) 
+    private function prepareChannelTree($channelId, $cnames = []) 
     {
-        $tree = array();
+        $tree = [];
         foreach ($this->_channelDatas as $channel) {
             if ($channel->parent == $channelId) {
                 if ($channel->show) {
@@ -249,17 +249,17 @@ class Mumble
 
                     $topic = $this->toHTML($channel->description);
 
-                    $icons = array();
+                    $icons = [];
                     $icons[] = !count($channel->links)?"channel.png":"channel_linked";
                     $icons = $this->renderImages($icons);
                     
-                    $tree[$channel->id] = array(
+                    $tree[$channel->id] = [
                         'link'  => $this->buildLink($cnames),
                         'name'  => $name,
                         'topic' => $topic,
                         'icon'  => $icons,
                         'flags' => '' 
-                    );
+                    ];
 
                     if ($users = $this->prepareUsers($channel->id))
                         $tree[$channel->id] ['users'] = $users;
@@ -289,17 +289,17 @@ class Mumble
             else if (count($this->_channelList) > 0)
                 $this->setShowFlag($this->_channelList);
 
-            $root = array( 
+            $root = [ 
                 'link'  => $this->buildLink(),
                 'name'  => $this->toHTML($this->_serverDatas['registername']),
-                'icon'  => $this->renderImages(array("mumble.png")),        
-            );
+                'icon'  => $this->renderImages(["mumble.png"]),        
+            ];
             $channels = $this->prepareChannelTree(0);
 
         } catch (Exception $e) {
             
         }
-        return array('root' => $root, 'tree' => $channels);
+        return ['root' => $root, 'tree' => $channels];
     }
     
     /**
@@ -311,7 +311,7 @@ class Mumble
         
         $tree = $this->getChannelTree();
 
-        $content = array (
+        $content =  [
             'name'       => $this->toHTML($this->_serverDatas['registername']),
             'uptime'     => $this->time_convert($this->ice->getUptime()),
             'channelson' => count($this->_channelDatas) - 1,
@@ -322,7 +322,7 @@ class Mumble
             'userlist'   => $this->_userList,
             'root'       => $tree['root'],
             'tree'       => $tree['tree'],
-        );
+        ];
         return $content;
     }   
 }
