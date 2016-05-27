@@ -4,27 +4,31 @@
 
 <?php function getVoiceserverView($items) { ?>
     <?php foreach ($items as $item): ?>
-        <div class="voiceSrvItem">
+        <li>
             <a href="<?=$item['link'] ?>" title="<?=$item['topic'] ?>" >
                 <?=$item['icon'] . $item['name'] ?>
                 <?php if (isset($item['flags'])): ?>
                     <div class="voiceSrvFlags"><?=$item['flags'] ?></div>
                 <?php endif; ?>
                 <?php if (isset($item['users'])): ?>
-                    <?php foreach ($item['users'] as $user): ?>
-                        <div class="voiceSrvItem">
-                        <?=$user['icon'] . $user['name'] ?>
-                        <?php if (isset($user['flags'])): ?>
-                            <div class="voiceSrvFlags"><?=$user['flags'] ?></div>
-                        <?php endif; ?>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>          
-            </a>
-            <?php if (isset($item['children'])) {
-                getVoiceserverView($item['children']); 
-            } ?>
-        </div>
+                    <ul>
+                        <?php foreach ($item['users'] as $user): ?>
+                            <li>
+                            <?=$user['icon'] . $user['name'] ?>
+                            <?php if (isset($user['flags'])): ?>
+                                <div class="voiceSrvFlags"><?=$user['flags'] ?></div>
+                            <?php endif; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?> 
+            </a>   
+            <?php if (isset($item['children'])): ?>
+                <ul>
+                    <?php getVoiceserverView($item['children']); ?>  
+                </ul>
+            <?php endif; ?>
+        </li>
     <?php endforeach; ?>
 <?php }; ?>
 
@@ -123,12 +127,12 @@ switch ($voiceServer['Type']) {
         <tr>
             <td>
                 <div class="voiceSrv">
-                    <div class="voiceSrvItem voiceSrvServer">
+                    <ul class="voiceSrvItem voiceSrvServer">
                         <a href="<?=$datas['root']['link'] ?>" >
                             <?=$datas['root']['icon'] . $datas['root']['name'] ?>
                         </a>
                         <?php getVoiceserverView($datas['tree']); ?>
-                    </div>
+                    </ul>
                 </div>                
             </td>
             <td class="col-sm-6 hidden-xs">

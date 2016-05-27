@@ -2,27 +2,31 @@
 
 <?php function getVoiceserverBoxView($items) { ?>
     <?php foreach ($items as $item): ?>
-        <div class="voiceSrvItem">
+        <li>
             <a href="<?=$item['link'] ?>" title="<?=$item['topic'] ?>" >
                 <?=$item['icon'] . $item['name'] ?>
                 <?php if (isset($item['flags'])): ?>
                     <div class="voiceSrvFlags"><?=$item['flags'] ?></div>
                 <?php endif; ?>
                 <?php if (isset($item['users'])): ?>
-                    <?php foreach ($item['users'] as $user): ?>
-                        <div class="voiceSrvItem">
-                        <?=$user['icon'] . $user['name'] ?>
-                        <?php if (isset($user['flags'])): ?>
-                            <div class="voiceSrvFlags"><?=$user['flags'] ?></div>
-                        <?php endif; ?>
-                        </div>
-                    <?php endforeach; ?>
+                    <ul>
+                        <?php foreach ($item['users'] as $user): ?>
+                            <li>
+                            <?=$user['icon'] . $user['name'] ?>
+                            <?php if (isset($user['flags'])): ?>
+                                <div class="voiceSrvFlags"><?=$user['flags'] ?></div>
+                            <?php endif; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 <?php endif; ?>          
             </a>
-            <?php if (isset($item['children'])) {
-                getVoiceserverBoxView($item['children']); 
-            } ?>
-        </div>
+            <?php if (isset($item['children'])): ?>
+                <ul>
+                    <?php getVoiceserverBoxView($item['children']); ?>  
+                </ul>
+            <?php endif; ?>
+        </li>
     <?php endforeach; ?>
 <?php }; ?>
 
@@ -61,11 +65,11 @@ switch ($voiceServer['Type']) {
 
 <?php if (is_array($datas)): ?>
     <div class="voiceSrv">
-        <div class="voiceSrvItem voiceSrvServer">
+        <ul class="voiceSrvItem voiceSrvServer">
             <a href="<?=$datas['root']['link'] ?>">
                 <?=$datas['root']['icon'] . $datas['root']['name'] ?>
             </a>
             <?php getVoiceserverBoxView($datas['tree']); ?>
-        </div>
+        </ul>
     </div>
 <?php endif; ?>
