@@ -3,26 +3,28 @@
 <?php $voiceServer = $this->get('voiceServer'); ?>
 
 <?php function getVoiceserverView($items) { ?>
-    <?php foreach ($items as $item): ?>
-        <li>
+    <?php $last_channel = end((array_keys($items))); ?>
+    <?php foreach ($items as $key => $item): ?>
+        <li <?php if($last_channel == $key): ?>class="last"<?php endif; ?> >
             <a href="<?=$item['link'] ?>" title="<?=$item['topic'] ?>" >
                 <?=$item['icon'] . $item['name'] ?>
                 <?php if (isset($item['flags'])): ?>
                     <div class="voiceSrvFlags"><?=$item['flags'] ?></div>
                 <?php endif; ?>
-                <?php if (isset($item['users'])): ?>
-                    <ul>
-                        <?php foreach ($item['users'] as $user): ?>
-                            <li>
+            </a>
+            <?php if (isset($item['users'])): ?>
+                <ul>
+                    <?php $last_user = end((array_keys($item['users']))); ?>
+                    <?php foreach ($item['users'] as $u_key => $user): ?>
+                        <li <?php if (!isset($item['children']) && $last_user == $u_key): ?>class="last"<?php endif; ?> >
                             <?=$user['icon'] . $user['name'] ?>
                             <?php if (isset($user['flags'])): ?>
                                 <div class="voiceSrvFlags"><?=$user['flags'] ?></div>
                             <?php endif; ?>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?> 
-            </a>   
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>                
             <?php if (isset($item['children'])): ?>
                 <ul>
                     <?php getVoiceserverView($item['children']); ?>  

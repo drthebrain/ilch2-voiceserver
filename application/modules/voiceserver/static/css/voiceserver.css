@@ -31,9 +31,9 @@ ul.voiceSrvItem ul:before {
     background-repeat: repeat-y;
     height: 100%;
     left: -20px;
-}    
+}
 
-ul.voiceSrvItem li{
+ul.voiceSrvItem li {
     position: relative;
     padding-left: 20px;
     line-height: 20px !important;
@@ -47,11 +47,11 @@ ul.voiceSrvItem li:before {
     left: 0;
 } 
 
-ul.voiceSrvItem li:last-child:before {
+ul.voiceSrvItem li.last:before {
     background-position: -40px top;
 }
 
-ul.voiceSrvItem li:last-child > ul:before {
+ul.voiceSrvItem li:last-child ul:before {
     background: none;
 }
 
