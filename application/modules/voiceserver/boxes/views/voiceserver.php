@@ -87,7 +87,7 @@ switch ($voiceServer['Type']) {
             refreshVoice();
             function refreshVoice() {
                 $('#voiceserver').load('<?=$this->getUrl(['module' => 'voiceserver', 'controller' => 'ajax','action' => 'refreshVoice']); ?>');
-            };
+            }
         }, <?=$voiceServer['Refresh']*1000 ?> );
     });
 </script>
