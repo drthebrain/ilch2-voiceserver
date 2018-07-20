@@ -4,15 +4,14 @@
  * @package ilch
  */
 
-return 
-    [
+return [
     'menuVoiceServer'      => 'Voiceserver',   
     'voiceServerType'      => 'Server Type',
-    'voiceServerIP'        => 'Server IP',
+    'voiceServerIP'        => 'Server IP-Adresse',
     'voiceServerPort'      => 'Server Port',
     'voiceServerQPort'     => 'Server Queryport',
     'voiceServerCIcons'    => 'Benutzerdefinierte Icons',
-    'voiceServerHideEmpty' => 'verstecke leere Kanäle',
+    'voiceServerHideEmpty' => 'Verstecke leere Kanäle',
     'voiceServerRefresh'   => 'Refreshzeit',
     
     'missingIP'            => 'Bitte IP Adresse eingeben',
@@ -20,11 +19,15 @@ return
     'missingPort'          => 'Bitte Port eingeben',
     
     'tableName'            => 'Servername',
-    'tableOS'              => 'Betriebsystem',
+    'tableOS'              => 'Betriebssystem',
     'tableUptime'          => 'Laufzeit',
     'tableChannels'        => 'Kanäle',
     'tableUser'            => 'Benutzer',
     'tableChannel'         => 'Kanal',
     'tableLoggedin'        => 'Eingeloggt seit',
     'tableAfK'             => 'AFK seit',
-    ];
+
+    'server' => 'Server',
+    'version' => 'Version',
+    'welcomeMessage' => 'Willkommensnachricht',
+];

@@ -34,7 +34,7 @@ class TS3
     public $hideParentChannels;
     public $showIcons;
 
-    public function TS3($host, $queryPort) 
+    public function __construct($host, $queryPort)
     {
         $this->_host = $host;
         $this->_queryPort = $queryPort;
@@ -153,19 +153,21 @@ class TS3
     private function renderImages($images) 
     { 
         $content = "";
-        foreach ($images as $image)
+        foreach ($images as $image) {
             if (file_exists(realpath('') .  $this->imagePath . $image)) {
                 $content .= '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
             } else {
                 $content .= $this->renderIcon($image);
             }
+        }
         return $content;
     }
-    
+
     /**
      * download and render icon
      * @param string $id
      * @return string
+     * @throws Exception
      */
     private function renderIcon($id) 
     { 
@@ -174,7 +176,7 @@ class TS3
         if ($id == "100" || $id == "200" || $id == "300" || $id == "500" || $id == "600") {
             $image = "group_" . $id . ".png";
             $content = '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
-        } else {          
+        } else {
             if (!file_exists(realpath('') .  $this->imagePath . 'server/') 
                 && !is_dir(realpath('') .  $this->imagePath . 'server/') 
                 && !is_writable(realpath('') .  $this->imagePath . 'server/')) {
@@ -219,9 +221,9 @@ class TS3
 
         if ($day>0) {
             $time = $day."d ".$hours."h ".$minutes."m ".$seconds."s";
-        } elseif ($hours>0) {
+        } elseif ($hours > 0) {
             $time = $hours."h ".$minutes."m ".$seconds."s";
-        } elseif ($minutes>0) {
+        } elseif ($minutes > 0) {
             $time = $minutes."m ".$seconds."s";
         } else {
             $time = $seconds."s";
@@ -249,8 +251,10 @@ class TS3
         if ($this->_socket) {
             @socket_set_timeout($this->_socket, $this->timeout);
             $isTs3 = trim(fgets($this->_socket)) == "TS3";
-            if (!$isTs3)
+
+            if (!$isTs3) {
                 throw new Exception("Not a Teamspeak 3 server/bad query port");
+            }
 
             if ($this->_login !== false) {
                 $this->sendCommand("login client_login_name=" . $this->_login . " client_login_password=" . $this->_password);
@@ -263,7 +267,7 @@ class TS3
             $response .= $this->sendCommand("clientlist -uid -times -away -voice -groups -info -icon");
             $response .= $this->sendCommand("servergrouplist");
             $response .= $this->sendCommand("channelgrouplist");
-                 
+
             return $response;
         } else {
             throw new Exception("Socket error: $errstr [$errno]");
@@ -272,13 +276,28 @@ class TS3
 
     private function disconnect() 
     {
-        @fputs($this->_socket, "quit\n");
-        @fclose($this->_socket);
+        if ($this->_socket) {
+            @fputs($this->_socket, "quit\n");
+            @fclose($this->_socket);
+        }
     }
 
     private function update() 
     {
-        $response = $this->queryServer();
+        require_once 'cache.class.php';
+        $cacheKey = 'ts3';
+        $cache = new Cache(['name' => $cacheKey, 'path' => APPLICATION_PATH.'/modules/voiceserver/cache/', 'extension' => '.cache']);
+
+        // Delete expired cache and try to retrieve it after that.
+        $cache->eraseExpired();
+        $result = $cache->retrieve($cacheKey);
+
+        if (!empty($result)) {
+            $response = $result;
+        } else {
+            $response = $this->queryServer();
+        }
+
         $lines = explode("error id=0 msg=ok\n\r", $response);
         if (count($lines) == 7) {
             $this->_serverDatas = $this->parseLine($lines[1]);
@@ -310,6 +329,9 @@ class TS3
             foreach ($channelGroups as $cg) 
                 if ($cg["iconid"] > 0)
                     $this->setChannelGroupFlag($cg["cgid"], 'group_' . $cg["iconid"] . '.png');
+
+            // Store content in cache.
+            $cache->store($cacheKey, $response, 30);
         } else {
             throw new Exception("Invalid server response");
         }
@@ -432,7 +454,7 @@ class TS3
 
     /**
      * get the Servertree
-     * @return array
+     * @return array|string
      */
     public function getChannelTree() 
     {
@@ -452,18 +474,20 @@ class TS3
                 'icon'  => $this->renderImages(["ts3.png"]),        
             ];
             $channels = $this->prepareChannelTree(0);
-            
+
             $this->disconnect();
         } catch (Exception $e) {
             $this->disconnect();
             return 'offline';
         }
+
         return ['root' => $root, 'tree' => $channels];
     }
 
     /**
      * get the full ServerInformations
      * @return array
+     * @throws Exception
      */
     public function getFullServerInfo() 
     {
@@ -487,6 +511,7 @@ class TS3
         } else {
             $content = 'offline';
         }
+
         return $content;
     }
 }

@@ -2,7 +2,7 @@
 
 <form class="form-horizontal" method="POST" action="">
     <?=$this->getTokenField() ?>
-    <? $voiceServer = $this->get('voiceServer'); ?>
+    <?php $voiceServer = $this->get('voiceServer'); ?>
 
     <div class="form-group">
         <label for="voiceServer[Type]" class="col-lg-2 control-label">
@@ -92,7 +92,7 @@
                    value="<?=isset($voiceServer['Refresh']) ? $this->escape($voiceServer['Refresh']) : '30' ?>" />
         </div>
     </div>
-    
+
     <?=$this->getSaveBar() ?>
 </form>
 

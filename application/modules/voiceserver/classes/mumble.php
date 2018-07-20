@@ -18,25 +18,30 @@ if(Mumble::$useNewAPI) {
 class Mumble
 {
     public static $useNewAPI;
-    
+
     private $id;
     private $_serverDatas;
     private $_channelDatas;
     private $_userDatas;
     private $_userList;
     private $_channelList;
-    
+    private $_host;
+    private $_port;
+    private $ice;
+
     public $imagePath;
     public $hideEmptyChannels;
     public $hideParentChannels;
-    
-    public function Mumble($host, $port)
+
+
+
+    public function __construct($host, $port)
     {
         $this->_host = $host;
         $this->_port = $port;
-        
-        $this->ice  = $this->init_ICE();
-        
+
+        $this->ice = $this->init_ICE();
+
         $this->id = 1;
         $this->_serverDatas = [];
         $this->_channelDatas = [];
@@ -47,7 +52,7 @@ class Mumble
         $this->hideEmptyChannels = false;
         $this->hideParentChannels = false;
     }
-    
+
     /**
      * Create's a ICE object
      * @return ice object
@@ -152,7 +157,7 @@ class Mumble
             $defaultconf = $this->ice->getDefaultConf();
             $serverconf = $server->getAllConf();
             $this->_serverDatas = array_merge($defaultconf, $serverconf);
-            
+
             $this->ice->getVersion($major, $minor, $patch, $text);
             $this->_serverDatas['version'] = $major . '.' . $minor . '.' . $patch;
 
@@ -232,10 +237,11 @@ class Mumble
         }
         return $users;
     }
-     
+
     /**
      * prepare Channel Data
      * @param int $channelId
+     * @param array $cnames
      * @return array
      */
     private function prepareChannelTree($channelId, $cnames = []) 
@@ -278,7 +284,7 @@ class Mumble
      * @return array
      */
     public function getChannelTree() 
-    { 
+    {
         try {
             $this->update(); 
 
@@ -295,23 +301,22 @@ class Mumble
                 'icon'  => $this->renderImages(["mumble.png"]),        
             ];
             $channels = $this->prepareChannelTree(0);
-
         } catch (Exception $e) {
-            
+
         }
         return ['root' => $root, 'tree' => $channels];
     }
-    
+
     /**
      * get the full ServerInformations
      * @return array
+     * @throws Exception
      */
     public function getFullServerInfo() 
     {
-        
         $tree = $this->getChannelTree();
 
-        $content =  [
+        $content = [
             'name'       => $this->toHTML($this->_serverDatas['registername']),
             'uptime'     => $this->time_convert($this->ice->getUptime()),
             'channelson' => count($this->_channelDatas) - 1,
@@ -323,6 +328,7 @@ class Mumble
             'root'       => $tree['root'],
             'tree'       => $tree['tree'],
         ];
+
         return $content;
     }   
 }

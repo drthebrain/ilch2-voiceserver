@@ -63,7 +63,6 @@ switch ($voiceServer['Type']) {
         $datas = $ventriloviewer->getFullServerInfo(); 
         break;
     default:
-        break;
 }
 ?>
 
@@ -141,19 +140,19 @@ switch ($voiceServer['Type']) {
                 <table>
                     <tbody>
                         <tr>
-                            <td><b>Server:</b></td>
+                            <td><b><?=$this->getTrans('server') ?>:</b></td>
                         </tr>
                         <tr>
                             <td><?=$datas['name'] ?><br><br></td>
                         </tr>
                         <tr>
-                            <td><b>Server IP:</b></td>
+                            <td><b><?=$this->getTrans('voiceServerIP') ?>:</b></td>
                         </tr>
                         <tr>
                             <td><?=$datas['server'] ?><br><br></td>
                         </tr>
                         <tr>
-                            <td><b>Version:</b></td>
+                            <td><b><?=$this->getTrans('version') ?>:</b></td>
                         </tr>
                         <tr>
                             <td><?=$datas['version'] ?><br><br></td>
@@ -164,7 +163,7 @@ switch ($voiceServer['Type']) {
                             </tr>
                         <?php endif; ?>
                         <tr>
-                            <td><b>Welcome Message:</b></td>
+                            <td><b><?=$this->getTrans('welcomeMessage') ?>:</b></td>
                         </tr>
                         <tr>
                             <td><?=$this->getHtmlFromBBCode($datas['welcome']) ?><br><br></td>
