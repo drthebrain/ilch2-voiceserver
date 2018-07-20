@@ -155,7 +155,7 @@ class TS3
         $content = "";
         foreach ($images as $image) {
             if (file_exists(realpath('') .  $this->imagePath . $image)) {
-                $content .= '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
+                $content .= '<img src="' . BASE_URL . $this->imagePath . $image . '" alt="' . $image . '"/>';
             } else {
                 $content .= $this->renderIcon($image);
             }
@@ -175,7 +175,7 @@ class TS3
         if ($id < 0) $id = $id+4294967296; 
         if ($id == "100" || $id == "200" || $id == "300" || $id == "500" || $id == "600") {
             $image = "group_" . $id . ".png";
-            $content = '<img src="' . $this->imagePath . $image . '" alt="' . $image . '"/>';
+            $content = '<img src="' . BASE_URL . $this->imagePath . $image . '" alt="' . $image . '"/>';
         } else {
             if (!file_exists(realpath('') .  $this->imagePath . 'server/') 
                 && !is_dir(realpath('') .  $this->imagePath . 'server/') 
@@ -199,7 +199,7 @@ class TS3
                 }
             }
             if (file_exists($pfad) && $this->showIcons) {
-                $content .= '<img src="' . $this->imagePath . 'server/' . $image . '" alt="' . $image . '"/>';
+                $content .= '<img src="' . BASE_URL . $this->imagePath . 'server/' . $image . '" alt="' . $image . '"/>';
             }
         }
         return $content;

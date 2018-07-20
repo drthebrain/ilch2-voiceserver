@@ -1,7 +1,7 @@
 <?php $voiceServer = $this->get('voiceServer'); ?>
 
 <?php function getVoiceserverBoxView($items) { ?>
-    <?php $last_channel = end((array_keys($items))); ?>
+    <?php $last_channel = array_keys($items)[count($items)-1]; ?>
     <?php foreach ($items as $key => $item): ?>
         <li <?php if($last_channel == $key): ?>class="last"<?php endif; ?> >
             <a href="<?=$item['link'] ?>" title="<?=$item['topic'] ?>" >
@@ -12,7 +12,7 @@
             </a>
             <?php if (isset($item['users'])): ?>
                 <ul>
-                    <?php $last_user = end((array_keys($item['users']))); ?>
+                    <?php $last_user = array_keys($item['users'])[count($item['users'])-1]; ?>
                     <?php foreach ($item['users'] as $u_key => $user): ?>
                         <li <?php if (!isset($item['children']) && $last_user == $u_key): ?>class="last"<?php endif; ?> >
                             <?=$user['icon'] . $user['name'] ?>
