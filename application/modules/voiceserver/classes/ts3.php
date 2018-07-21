@@ -185,6 +185,12 @@ class TS3
             $image = $id . '.png';
             $pfad = realpath('') . $this->imagePath . 'server/' . $image;
             if (!file_exists($pfad) && $this->showIcons)  {
+                // This is needed to prevent an error, which occured when renderIcon() called sendCommand(), while
+                // the socket is null.
+                if (!$this->_socket) {
+                    return $content;
+                }
+
                 $dl = $this->parseLine($this->sendCommand("ftinitdownload clientftfid=".rand(1,99)." name=\/icon_".$id." cid=0 cpw= seekpos=0"));
                 $ft = @fsockopen($this->_host, $dl[0]['port'], $errnum, $errstr, 2);
                 if ($ft) {
@@ -292,16 +298,8 @@ class TS3
         $cache->eraseExpired();
         $result = $cache->retrieve($cacheKey);
 
-        $costumIconsPath = realpath('') . $this->imagePath . 'server';
         if (!empty($result)) {
-            // Call queryServer() if showIcons is enabled, but the folder missing.
-            // This is needed to prevent an error, which occured when renderIcon() called sendCommand(), while
-            // the socket is null.
-            if ($this->showIcons && !file_exists($costumIconsPath)) {
-                $response = $this->queryServer();
-            } else {
-                $response = $result;
-            }
+            $response = $result;
         } else {
             $response = $this->queryServer();
         }
