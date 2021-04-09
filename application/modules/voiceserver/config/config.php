@@ -8,25 +8,35 @@ namespace Modules\Voiceserver\Config;
 
 class Config extends \Ilch\Config\Install
 {
-    public $config = 
-        [
+    public $config = [
         'key' => 'voiceserver',
+        'version' => '1.0.0',
         'author' => 'Rümmler, Dirk',
         'icon_small' => 'voiceserver.png',
-        'languages' => 
-            [
-            'de_DE' => 
-                [
+        'link' => 'https://github.com/drthebrain/voiceserver',
+        'languages' => [
+            'de_DE' => [
                 'name' => 'Voiceserver',
                 'description' => 'Hier kann der Voiceserver (TS3|Ventrilo|Mumble) verwaltet werden.',
-                ],
-            'en_EN' => 
-                [
+            ],
+            'en_EN' => [
                 'name' => 'Voiceserver',
-                'description' => 'Here you can manage Voiceserver (TS3|Ventrilo|Mumble) from your Site.',
+                'description' => 'Here you can manage your voiceserver (TS3|Ventrilo|Mumble).',
+            ],
+        ],
+        'boxes' => [
+            'voiceserver' => [
+                'de_DE' => [
+                    'name' => 'Voiceserver'
                 ],
+                'en_EN' => [
+                    'name' => 'Voiceserver'
+                ]
             ]
-        ];
+        ],
+        'ilchCore' => '2.0.0',
+        'phpVersion' => '5.6'
+    ];
 
     public function install()
     {
@@ -37,5 +47,10 @@ class Config extends \Ilch\Config\Install
     public function uninstall()
     {
         $this->db()->queryMulti("DELETE FROM `[prefix]_config` WHERE `key` = 'voice_server'");
+    }
+
+    public function getUpdate($installedVersion)
+    {
+
     }
 }

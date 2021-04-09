@@ -1,10 +1,11 @@
 .voiceSrvServer {
     margin-left: 0;
 }
-.voiceSrv, .voiceSrv *, .voiceSrverror {
+
+.voiceSrv, .voiceSrv * {
     background-color: #ffffff;
-    color: #00000;
-    font-family: Verdana;
+    color: #000000;
+    font-family: Verdana, serif;
     font-size: 12px;
 }
 

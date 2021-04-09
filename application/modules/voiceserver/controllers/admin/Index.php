@@ -32,7 +32,7 @@ class Index extends \Ilch\Controller\Admin
 
         if ($this->getRequest()->isPost()) {
             $voiceserver = $this->getRequest()->getPost('voiceServer');
-            
+
             switch ($voiceserver['Type']) {
                 case 'TS3':
                     if (empty($voiceserver['IP'])) {
@@ -60,9 +60,8 @@ class Index extends \Ilch\Controller\Admin
                     break;
                 default:
                     $message = 'Error';
-                    break;
-            }                 
-             
+            }
+
             if (isset($message)) {
                 $this->addMessage($message, 'danger');
             } else {        

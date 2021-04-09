@@ -3,7 +3,7 @@
 <?php $voiceServer = $this->get('voiceServer'); ?>
 
 <?php function getVoiceserverView($items) { ?>
-    <?php $last_channel = end((array_keys($items))); ?>
+    <?php $last_channel = array_keys($items)[count($items)-1]; ?>
     <?php foreach ($items as $key => $item): ?>
         <li <?php if($last_channel == $key): ?>class="last"<?php endif; ?> >
             <a href="<?=$item['link'] ?>" title="<?=$item['topic'] ?>" >
@@ -14,7 +14,7 @@
             </a>
             <?php if (isset($item['users'])): ?>
                 <ul>
-                    <?php $last_user = end((array_keys($item['users']))); ?>
+                    <?php $last_user = array_keys($item['users'])[count($item['users'])-1]; ?>
                     <?php foreach ($item['users'] as $u_key => $user): ?>
                         <li <?php if (!isset($item['children']) && $last_user == $u_key): ?>class="last"<?php endif; ?> >
                             <?=$user['icon'] . $user['name'] ?>
@@ -63,7 +63,6 @@ switch ($voiceServer['Type']) {
         $datas = $ventriloviewer->getFullServerInfo(); 
         break;
     default:
-        break;
 }
 ?>
 
@@ -141,19 +140,19 @@ switch ($voiceServer['Type']) {
                 <table>
                     <tbody>
                         <tr>
-                            <td><b>Server:</b></td>
+                            <td><b><?=$this->getTrans('server') ?>:</b></td>
                         </tr>
                         <tr>
                             <td><?=$datas['name'] ?><br><br></td>
                         </tr>
                         <tr>
-                            <td><b>Server IP:</b></td>
+                            <td><b><?=$this->getTrans('voiceServerIP') ?>:</b></td>
                         </tr>
                         <tr>
                             <td><?=$datas['server'] ?><br><br></td>
                         </tr>
                         <tr>
-                            <td><b>Version:</b></td>
+                            <td><b><?=$this->getTrans('version') ?>:</b></td>
                         </tr>
                         <tr>
                             <td><?=$datas['version'] ?><br><br></td>
@@ -164,7 +163,7 @@ switch ($voiceServer['Type']) {
                             </tr>
                         <?php endif; ?>
                         <tr>
-                            <td><b>Welcome Message:</b></td>
+                            <td><b><?=$this->getTrans('welcomeMessage') ?>:</b></td>
                         </tr>
                         <tr>
                             <td><?=$this->getHtmlFromBBCode($datas['welcome']) ?><br><br></td>

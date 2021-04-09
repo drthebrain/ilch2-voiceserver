@@ -26,7 +26,7 @@ class Ventrilo
     public $hideEmptyChannels;
     public $hideParentChannels;
     
-    public function Ventrilo($host, $port) 
+    public function __construct($host, $port)
     {
         $this->_host = $host;
         $this->_port = $port;
@@ -181,7 +181,7 @@ class Ventrilo
     
     private function update() 
     {
-        $response = $this->queryServer();
+        $this->queryServer();
         
         $tmpChannels = $this->_channelList;
         $this->_channelList = [];
@@ -241,10 +241,11 @@ class Ventrilo
         }
         return $users;
     }
-    
+
     /**
      * prepare Channel Data
      * @param int $channelId
+     * @param array $cnames
      * @return array
      */
     private function prepareChannelTree($channelId, $cnames = []) 
@@ -291,7 +292,7 @@ class Ventrilo
      * @return array
      */
     public function getChannelTree() 
-    { 
+    {
         try {
             $this->update(); 
 
@@ -308,19 +309,19 @@ class Ventrilo
                 'icon'  => $this->renderImages(["ventrilo.png"]),        
             ];
             $channels = $this->prepareChannelTree(0);
-            
         } catch (Exception $e) {
             
         }
         return ['root' => $root, 'tree' => $channels];
     }
-    
+
     /**
      * get the full ServerInformations
      * @return array
+     * @throws Exception
      */
     public function getFullServerInfo() 
-    {       
+    {
         $tree = $this->getChannelTree();
 
         $content =  [
@@ -336,6 +337,7 @@ class Ventrilo
             'root'       => $tree['root'],
             'tree'       => $tree['tree'],
         ];
+
         return $content;
     }
 }

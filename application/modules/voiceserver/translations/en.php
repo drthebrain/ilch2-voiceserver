@@ -4,28 +4,31 @@
  * @package ilch
  */
 
-return 
-    [
+return [
     'menuVoiceServer'      => 'Voiceserver',
-    'voiceServerType'      => 'Server Type',
-    'voiceServerIP'        => 'Server IP',
-    'voiceServerPort'      => 'Server Port',
-    'voiceServerQPort'     => 'Server Queryport',
-    'voiceServerCIcons'    => 'Custom Icons',
-    'voiceServerHideEmpty' => 'Hidden empty channels',
+    'voiceServerType'      => 'Server type',
+    'voiceServerIP'        => 'Server IP address',
+    'voiceServerPort'      => 'Server port',
+    'voiceServerQPort'     => 'Server queryport',
+    'voiceServerCIcons'    => 'Custom icons',
+    'voiceServerHideEmpty' => 'Hide empty channels',
     'voiceServerRefresh'   => 'Refreshtime',
     
     
     'missingIP'            => 'Please enter IP address',
-    'missingQPort'         => 'Please enter Queryport',
-    'missingPort'          => 'Please enter Port',
+    'missingQPort'         => 'Please enter queryport',
+    'missingPort'          => 'Please enter port',
     
     'tableName'            => 'Servername',
-    'tableOS'              => 'System',
+    'tableOS'              => 'Operating system',
     'tableUptime'          => 'Uptime',
     'tableChannels'        => 'Channels',
     'tableUser'            => 'User',
     'tableChannel'         => 'Channel',
-    'tableLoggedin'        => 'Logged since',
+    'tableLoggedin'        => 'Logged in since',
     'tableAfK'             => 'AFK since',
-    ];
+
+    'server' => 'Server',
+    'version' => 'Version',
+    'welcomeMessage' => 'Welcome message',
+];
