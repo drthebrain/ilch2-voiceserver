@@ -10,7 +10,7 @@ class Config extends \Ilch\Config\Install
 {
     public $config = [
         'key' => 'voiceserver',
-        'version' => '1.0',
+        'version' => '1.0.0',
         'author' => 'Rümmler, Dirk',
         'icon_small' => 'voiceserver.png',
         'link' => 'https://github.com/drthebrain/voiceserver',
